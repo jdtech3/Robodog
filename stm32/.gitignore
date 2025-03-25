@@ -1,0 +1,10 @@
+# Eclipse/STM32Cube
+**/.settings/
+**/.metadata/
+*.launch
+**/[Rr]elease/
+**/[Dd]ebug/
+
+# VS Code/PlatformIO
+**/.vscode/
+**/.pio/
