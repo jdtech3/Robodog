@@ -212,9 +212,9 @@ struct RectPrism{
         shaders.setUniform("u_model", model, false);
         shaders.setUniform("u_vp", camera.get_vp(), false);
         shaders.setUniform("orientation", glm::vec3(
-            (2.f*M_PI/KEYHITS_PER_ROTATION)*(camera.rotationState.x.actual)+M_PI/4.f,
-            (2.f*M_PI/KEYHITS_PER_ROTATION)*(camera.rotationState.y.actual)+M_PI/4.f,
-            (2.f*M_PI/KEYHITS_PER_ROTATION)*(camera.rotationState.z.actual)+(0)
+            (2.f*M_PI/KEYHITS_PER_ROTATION)*(camera.rotationState.x.actual),
+            (2.f*M_PI/KEYHITS_PER_ROTATION)*(camera.rotationState.y.actual),
+            (2.f*M_PI/KEYHITS_PER_ROTATION)*(camera.rotationState.z.actual)
         ));
 
         shaders.bind();
