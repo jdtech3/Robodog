@@ -226,7 +226,7 @@ struct RectPrism{
 };
 
 struct Legs : public RectPrism{
-    glm::vec3 theta0, theta1, theta2, theta3;
+    glm::vec3 theta[4];
 
     Legs(const std::filesystem::path& vertex_shader, const std::filesystem::path& fragment_shader):
         RectPrism(
@@ -235,10 +235,12 @@ struct Legs : public RectPrism{
             glm::vec4(0.f, 1.f, 0.f, 1.f),
             vertex_shader,
             fragment_shader),
-        theta0{0.f, 0.f, 0.f},
-        theta1{0.f, 0.f, 0.f},
-        theta2{0.f, 0.f, 0.f},
-        theta3{0.f, 0.f, 0.f}
+        theta{
+            glm::vec3(0.f, 0.f, 0.f),
+            glm::vec3(0.f, 0.f, 0.f),
+            glm::vec3(0.f, 0.f, 0.f),
+            glm::vec3(0.f, 0.f, 0.f)
+        }
     {}
 
     void draw_single_leg(const Camera& camera, const glm::vec3& start, const glm::vec3& theta) {
@@ -262,25 +264,25 @@ struct Legs : public RectPrism{
     }
 
     virtual void draw(const Camera& camera) override{
-        glm::vec3 start, theta;
+        glm::vec3 start, theta_tmp;
         start = glm::vec3(BODY_X/2,-BODY_Y/2,-BODY_Z/2);
-        theta = theta0;
-        draw_single_leg(camera, start, theta);
+        theta_tmp = theta[0];
+        draw_single_leg(camera, start, theta_tmp);
         start = glm::vec3(BODY_X/2,BODY_Y/2,-BODY_Z/2);
-        theta = theta1;
-        theta[1] *= -1.f;
-        theta[2] *= -1.f;
-        draw_single_leg(camera, start, theta);
+        theta_tmp = theta[1];
+        theta_tmp[1] *= -1.f;
+        theta_tmp[2] *= -1.f;
+        draw_single_leg(camera, start, theta_tmp);
         start = glm::vec3(-BODY_X/2,BODY_Y/2,-BODY_Z/2);
-        theta = theta2;
-        theta[0] *= -1.f;
-        theta[1] *= -1.f;
-        theta[2] *= -1.f;
-        draw_single_leg(camera, start, theta);
+        theta_tmp = theta[2];
+        theta_tmp[0] *= -1.f;
+        theta_tmp[1] *= -1.f;
+        theta_tmp[2] *= -1.f;
+        draw_single_leg(camera, start, theta_tmp);
         start = glm::vec3(-BODY_X/2,-BODY_Y/2,-BODY_Z/2);
-        theta = theta3;
-        theta[0] *= -1.f;
-        draw_single_leg(camera, start, theta);
+        theta_tmp = theta[3];
+        theta_tmp[0] *= -1.f;
+        draw_single_leg(camera, start, theta_tmp);
     }
 
     static glm::vec3 ik(const glm::vec3& r){
@@ -461,7 +463,7 @@ int main(int argc, char* argv[]){
 
             } // while(SDL_PollEvent(&event))
 
-            legs.theta0 = Legs::ik(leg0_pos);
+            legs.theta[0] = Legs::ik(leg0_pos);
 
             /* FPS related stuff */
             fps.compute();
