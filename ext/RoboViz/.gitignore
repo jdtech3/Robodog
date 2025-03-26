@@ -1,0 +1,8 @@
+# where CMake is usually ran
+build/
+
+# CMake will generate binaries here
+bin/
+
+# CMake will generate static libraries here
+lib/
