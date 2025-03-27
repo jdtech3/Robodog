@@ -22,6 +22,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdint.h>
+
+#include "robot_main.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -31,7 +33,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define PWM_TIM_US_PER_CYCLE  10
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -62,19 +64,7 @@ static void MX_TIM4_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void set_pwm_val(TIM_HandleTypeDef *tim, int width_us, uint32_t channel) {
-  TIM_OC_InitTypeDef sConfigOC = {0};
 
-  uint16_t width_cycles = width_us / PWM_TIM_US_PER_CYCLE;
-
-  sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  sConfigOC.Pulse = width_cycles;
-  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-
-  HAL_TIM_PWM_ConfigChannel(tim, &sConfigOC, channel);
-  HAL_TIM_PWM_Start(tim, channel);
-}
 /* USER CODE END 0 */
 
 /**
@@ -113,6 +103,8 @@ int main(void)
   HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
   HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
+
+  run_robot();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -122,19 +114,19 @@ int main(void)
     // /* USER CODE END WHILE */
     // set_pwm_val(&htim4, 500, TIM_CHANNEL_1);
     // set_pwm_val(&htim4, 500, TIM_CHANNEL_2);
-    int endpoint = 800;
-    for (int i = 500; i <= endpoint; i += 10) {
-      set_pwm_val(&htim4, i, TIM_CHANNEL_1);
-      HAL_Delay(1);
-      set_pwm_val(&htim4, i, TIM_CHANNEL_2);
-      HAL_Delay(50);
-    }
-    for (int i = endpoint; i >= 500; i -= 10) {
-      set_pwm_val(&htim4, i, TIM_CHANNEL_1);
-      HAL_Delay(1);
-      set_pwm_val(&htim4, i, TIM_CHANNEL_2);
-      HAL_Delay(50);
-    }
+    // int endpoint = 800;
+    // for (int i = 500; i <= endpoint; i += 10) {
+    //   set_pwm_val(&htim4, i, TIM_CHANNEL_1);
+    //   HAL_Delay(1);
+    //   set_pwm_val(&htim4, i, TIM_CHANNEL_2);
+    //   HAL_Delay(50);
+    // }
+    // for (int i = endpoint; i >= 500; i -= 10) {
+    //   set_pwm_val(&htim4, i, TIM_CHANNEL_1);
+    //   HAL_Delay(1);
+    //   set_pwm_val(&htim4, i, TIM_CHANNEL_2);
+    //   HAL_Delay(50);
+    // }
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

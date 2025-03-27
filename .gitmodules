@@ -1,0 +1,3 @@
+[submodule "stm32/platformio/lib/cglm"]
+	path = stm32/platformio/lib/cglm
+	url = https://github.com/recp/cglm.git
