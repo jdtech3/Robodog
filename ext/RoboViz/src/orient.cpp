@@ -193,14 +193,16 @@ int main(int argc, char* argv[]){
             glm::vec3 FR_foot( BODY_X/2.f,  BODY_Y/2.f, 0);
             glm::vec3 FL_foot(-BODY_X/2.f,  BODY_Y/2.f, 0);
             glm::vec3 BL_foot(-BODY_X/2.f, -BODY_Y/2.f, 0);
+            glm::vec3 body_center(0.f, 0.f, dog_z);
+            
             glm::vec3 BR_body = dog_orientation*BR_foot;
             glm::vec3 FR_body = dog_orientation*FR_foot;
             glm::vec3 FL_body = dog_orientation*FL_foot;
             glm::vec3 BL_body = dog_orientation*BL_foot;
-            BR_body.z += LEG_L-LEG_S;
-            FR_body.z += LEG_L-LEG_S;
-            FL_body.z += LEG_L-LEG_S;
-            BL_body.z += LEG_L-LEG_S;
+            BR_body += body_center;
+            FR_body += body_center;
+            FL_body += body_center;
+            BL_body += body_center;
 
             legs.theta[0] = Legs::ik_BR(BR_foot - BR_body);
             legs.theta[1] = Legs::ik_FR(FR_foot - FR_body);
