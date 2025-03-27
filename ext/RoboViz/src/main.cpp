@@ -236,10 +236,10 @@ struct Legs : public RectPrism{
             vertex_shader,
             fragment_shader),
         theta{
-            glm::vec3(0.f, 0.f, 0.f),
-            glm::vec3(0.f, 0.f, 0.f),
-            glm::vec3(0.f, 0.f, 0.f),
-            glm::vec3(0.f, 0.f, 0.f)
+            glm::vec3(0.f, glm::radians(90.f), glm::radians(180.f)),
+            glm::vec3(0.f, glm::radians(90.f), glm::radians(180.f)),
+            glm::vec3(0.f, glm::radians(90.f), glm::radians(180.f)),
+            glm::vec3(0.f, glm::radians(90.f), glm::radians(180.f))
         }
     {}
 
@@ -247,7 +247,7 @@ struct Legs : public RectPrism{
         model = glm::mat4(1.f);
         model = glm::translate(model, glm::vec3(start.x,start.y,start.z));
         model = glm::rotate(model, theta[0], glm::vec3(0.f, -1.f, 0.f));
-        model = glm::rotate(model, theta[1], glm::vec3(-1.f, 0.f, 0.f));
+        model = glm::rotate(model, theta[1]-glm::radians(90.f), glm::vec3(-1.f, 0.f, 0.f));
         model = glm::translate(model, glm::vec3(0.f,0.f,(LEG_S-LEG_L)/2));
         color = glm::vec4(0.f, 1.f, 0.f, 1.f);
         RectPrism::draw(camera);
@@ -255,9 +255,9 @@ struct Legs : public RectPrism{
         model = glm::mat4(1.f);
         model = glm::translate(model, glm::vec3(start.x,start.y,start.z));
         model = glm::rotate(model, theta[0], glm::vec3(0.f, -1.f, 0.f));
-        model = glm::rotate(model, theta[1], glm::vec3(-1.f, 0.f, 0.f));
+        model = glm::rotate(model, theta[1]-glm::radians(90.f), glm::vec3(-1.f, 0.f, 0.f));
         model = glm::translate(model, glm::vec3(0.f,0.f,(LEG_S-LEG_L)));
-        model = glm::rotate(model, theta[2], glm::vec3(1.f, 0.f, 0.f));
+        model = glm::rotate(model, glm::radians(180.f)-theta[2], glm::vec3(1.f, 0.f, 0.f));
         model = glm::translate(model, glm::vec3(0.f,0.f,(LEG_S-LEG_L)/2));
         color = glm::vec4(0.f, 0.f, 1.f, 1.f);
         RectPrism::draw(camera);
@@ -270,13 +270,13 @@ struct Legs : public RectPrism{
         draw_single_leg(camera, start, theta_tmp);
         start = glm::vec3(BODY_X/2,BODY_Y/2,-BODY_Z/2);
         theta_tmp = theta[1];
-        theta_tmp[1] *= -1.f;
+        theta_tmp[1] = glm::radians(180.f)-theta_tmp[1];
         theta_tmp[2] *= -1.f;
         draw_single_leg(camera, start, theta_tmp);
         start = glm::vec3(-BODY_X/2,BODY_Y/2,-BODY_Z/2);
         theta_tmp = theta[2];
         theta_tmp[0] *= -1.f;
-        theta_tmp[1] *= -1.f;
+        theta_tmp[1] = glm::radians(180.f)-theta_tmp[1];
         theta_tmp[2] *= -1.f;
         draw_single_leg(camera, start, theta_tmp);
         start = glm::vec3(-BODY_X/2,-BODY_Y/2,-BODY_Z/2);
@@ -298,8 +298,8 @@ struct Legs : public RectPrism{
         float a4 = glm::acos( r.y/rlen );
         return glm::vec3(
             a1,
-            a2+a4-glm::radians(90.f),
-            glm::radians(180.f)-a3
+            a2+a4,
+            a3
         );
     }
 };
@@ -339,7 +339,7 @@ int main(int argc, char* argv[]){
             exepath / "../share/RoboViz/cube_fs.glsl"
         );
 
-        glm::vec3 leg0_pos(0.f, 0.f, -2*(LEG_L-LEG_S) + 0.01);
+        glm::vec3 leg0_pos(0.f, 0.f, -2*(LEG_L-LEG_S));
 
         PRINT_DEBUG("Cube Created\n");
 
@@ -464,6 +464,9 @@ int main(int argc, char* argv[]){
             } // while(SDL_PollEvent(&event))
 
             legs.theta[0] = Legs::ik(leg0_pos);
+            legs.theta[1] = legs.theta[0];
+            legs.theta[2] = legs.theta[0];
+            legs.theta[3] = legs.theta[0];
 
             /* FPS related stuff */
             fps.compute();
