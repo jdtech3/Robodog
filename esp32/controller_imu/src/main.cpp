@@ -43,8 +43,8 @@ THE SOFTWARE.
 constexpr float BODY_X =  2.f;
 constexpr float BODY_Y =  3.f;
 constexpr float BODY_Z =  0.5f;
-constexpr float LEG_L1 =  0.75f;
-constexpr float LEG_L2 =  0.75f;
+constexpr float LEG_L1 =  1.f;
+constexpr float LEG_L2 =  1.f;
 
 MPU6050 mpu;
 

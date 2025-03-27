@@ -93,7 +93,7 @@ void Legs::draw_single_leg(const Camera& camera, const glm::vec3& start, const g
     model = glm::translate(model, glm::vec3(start.x,start.y,start.z));
     model = glm::rotate(model, theta[0], glm::vec3(0.f, -1.f, 0.f));
     model = glm::rotate(model, theta[1]-glm::radians(90.f), glm::vec3(-1.f, 0.f, 0.f));
-    model = glm::translate(model, glm::vec3(0.f,0.f,(LEG_S-LEG_L)/2));
+    model = glm::translate(model, glm::vec3(0.f,0.f,(-LEG_L)/2));
     color = glm::vec4(0.f, 1.f, 0.f, 1.f);
     RectPrism::draw(camera);
 
@@ -101,9 +101,9 @@ void Legs::draw_single_leg(const Camera& camera, const glm::vec3& start, const g
     model = glm::translate(model, glm::vec3(start.x,start.y,start.z));
     model = glm::rotate(model, theta[0], glm::vec3(0.f, -1.f, 0.f));
     model = glm::rotate(model, theta[1]-glm::radians(90.f), glm::vec3(-1.f, 0.f, 0.f));
-    model = glm::translate(model, glm::vec3(0.f,0.f,(LEG_S-LEG_L)));
+    model = glm::translate(model, glm::vec3(0.f,0.f,(-LEG_L)));
     model = glm::rotate(model, glm::radians(180.f)-theta[2], glm::vec3(1.f, 0.f, 0.f));
-    model = glm::translate(model, glm::vec3(0.f,0.f,(LEG_S-LEG_L)/2));
+    model = glm::translate(model, glm::vec3(0.f,0.f,(-LEG_L)/2));
     color = glm::vec4(0.f, 0.f, 1.f, 1.f);
     RectPrism::draw(camera);
 }
@@ -131,8 +131,8 @@ void Legs::draw(const Camera& camera){
 }
 
 glm::vec3 Legs::ik_BR(const glm::vec3& r){
-    float L1 = LEG_L - LEG_S;
-    float L2 = LEG_L - LEG_S;
+    float L1 = LEG_L;
+    float L2 = LEG_L;
     float L1_2 = L1*L1;
     float L2_2 = L2*L2;
     float rlen = glm::length(r);
