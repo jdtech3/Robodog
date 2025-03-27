@@ -90,8 +90,6 @@ int main(int argc, char* argv[]){
             exepath / "../share/RoboViz/cube_fs.glsl"
         );
 
-        glm::vec3 leg0_pos(0.f, 0.f, -2*(LEG_L-LEG_S));
-
         // Setup MVP =============================
 
         gli::enable(gli::Capability_NI::CullFace);
