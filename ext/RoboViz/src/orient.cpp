@@ -176,24 +176,6 @@ int main(int argc, char* argv[]){
                             camera.rotationState.reset();
                         }
                         break;
-                    case SDLK_Q:
-                        leg0_pos.x += 0.01;
-                        break;
-                    case SDLK_A:
-                        leg0_pos.x -= 0.01;
-                        break;
-                    case SDLK_W:
-                        leg0_pos.y += 0.01;
-                        break;
-                    case SDLK_S:
-                        leg0_pos.y -= 0.01;
-                        break;
-                    case SDLK_E:
-                        leg0_pos.z += 0.01;
-                        break;
-                    case SDLK_D:
-                        leg0_pos.z -= 0.01;
-                        break;
                     case SDLK_ESCAPE:
                         keepRunning = false;
                         break;
@@ -207,23 +189,23 @@ int main(int argc, char* argv[]){
 
             retrieveOrientation(serial, dog_orientation, dog_z);
 
-            glm::vec3 BR( BODY_X/2.f, -BODY_Y/2.f, 0);
-            glm::vec3 FR( BODY_X/2.f,  BODY_Y/2.f, 0);
-            glm::vec3 FL(-BODY_X/2.f,  BODY_Y/2.f, 0);
-            glm::vec3 BL(-BODY_X/2.f, -BODY_Y/2.f, 0);
-            BR = dog_orientation*BR;
-            FR = dog_orientation*FR;
-            FL = dog_orientation*FL;
-            BL = dog_orientation*BL;
-            BR.z += LEG_L-LEG_S;
-            FR.z += LEG_L-LEG_S;
-            FL.z += LEG_L-LEG_S;
-            BL.z += LEG_L-LEG_S;
+            glm::vec3 BR_foot( BODY_X/2.f, -BODY_Y/2.f, 0);
+            glm::vec3 FR_foot( BODY_X/2.f,  BODY_Y/2.f, 0);
+            glm::vec3 FL_foot(-BODY_X/2.f,  BODY_Y/2.f, 0);
+            glm::vec3 BL_foot(-BODY_X/2.f, -BODY_Y/2.f, 0);
+            glm::vec3 BR_body = dog_orientation*BR_foot;
+            glm::vec3 FR_body = dog_orientation*FR_foot;
+            glm::vec3 FL_body = dog_orientation*FL_foot;
+            glm::vec3 BL_body = dog_orientation*BL_foot;
+            BR_body.z += LEG_L-LEG_S;
+            FR_body.z += LEG_L-LEG_S;
+            FL_body.z += LEG_L-LEG_S;
+            BL_body.z += LEG_L-LEG_S;
 
-            legs.theta[0] = Legs::ik_BR(glm::vec3(0.f, 0.f, -BR.z));
-            legs.theta[1] = Legs::ik_FR(glm::vec3(0.f, 0.f, -FR.z));
-            legs.theta[2] = Legs::ik_FL(glm::vec3(0.f, 0.f, -FL.z));
-            legs.theta[3] = Legs::ik_BL(glm::vec3(0.f, 0.f, -BL.z));
+            legs.theta[0] = Legs::ik_BR(BR_foot - BR_body);
+            legs.theta[1] = Legs::ik_FR(FR_foot - FR_body);
+            legs.theta[2] = Legs::ik_FL(FL_foot - FL_body);
+            legs.theta[3] = Legs::ik_BL(BL_foot - BL_body);
 
             /* FPS related stuff */
             fps.compute();
