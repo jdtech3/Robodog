@@ -19,23 +19,17 @@ int main(int argc, char* argv[]){
         SDL sdl(3,1);
         
         const SDL_DisplayMode* dm = SDL_GetDesktopDisplayMode(1);
-
         if (dm == nullptr)
             throw std::runtime_error(SDL_GetError());
+        int win_size = std::min(dm->h, dm->w) * 3.f/4.f;
 
-        int q = std::min(dm->h, dm->w) * 3.f/4.f;
-
-        SDL::OpenGLWindow window{"Cube", q, q};
-
+        SDL::OpenGLWindow window{"Cube", win_size, win_size};
         gli::initialize((GLADloadfunc)SDL_GL_GetProcAddress);
 
         auto exepath = std::filesystem::path(argv[0]).remove_filename();
-        Camera camera(glm::perspective(70.f*3.14159f/180.f, (float)dm->w/(float)dm->h, 0.001f, 1000.f));
+        Camera camera(glm::perspective(glm::radians(70.f), 1.f, 0.001f, 1000.f));
 
-        RectPrism body(
-            glm::vec3(0,0,0),
-            glm::vec3(BODY_X,BODY_Y,BODY_Z),
-            glm::vec4(1.f, 0.f, 0.f, 1.f),
+        Body body(
             exepath / "../share/RoboViz/cube_vs.glsl",
             exepath / "../share/RoboViz/cube_fs.glsl"
         );

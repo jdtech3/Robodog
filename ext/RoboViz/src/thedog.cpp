@@ -65,6 +65,15 @@ void RectPrism::draw(const Camera& camera){
     indexBuffer.draw<unsigned char>(gli::DrawTriangles, nvals, 0);
 }
 
+Body::Body(const std::filesystem::path& vertex_shader, const std::filesystem::path& fragment_shader):
+    RectPrism(
+        glm::vec3(0,0,0),
+        glm::vec3(BODY_X,BODY_Y,BODY_Z),
+        glm::vec4(1.f, 0.f, 0.f, 1.f),
+        vertex_shader,
+        fragment_shader)
+{}
+
 Legs::Legs(const std::filesystem::path& vertex_shader, const std::filesystem::path& fragment_shader):
     RectPrism(
         glm::vec3(0,0,0),
@@ -76,8 +85,8 @@ Legs::Legs(const std::filesystem::path& vertex_shader, const std::filesystem::pa
         glm::vec3(0.f, glm::radians(90.f), glm::radians(180.f)),
         glm::vec3(0.f, glm::radians(90.f), glm::radians(180.f)),
         glm::vec3(0.f, glm::radians(90.f), glm::radians(180.f)),
-        glm::vec3(0.f, glm::radians(90.f), glm::radians(180.f))
-    }{}
+        glm::vec3(0.f, glm::radians(90.f), glm::radians(180.f))}
+{}
 
 void Legs::draw_single_leg(const Camera& camera, const glm::vec3& start, const glm::vec3& theta) {
     model = glm::mat4(1.f);

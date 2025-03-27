@@ -32,6 +32,11 @@ public:
 
 };
 
+class Body : public RectPrism{
+public:
+    Body(const std::filesystem::path& vertex_shader, const std::filesystem::path& fragment_shader);
+};
+
 class Legs : public RectPrism{
 public:
     glm::vec3 theta[4];
