@@ -1,4 +1,4 @@
-#include "util.hpp"
+#include "sdl3_wrapper.hpp"
 
 SDL::Window::Window(const char* title, int width, int height, unsigned int windowFlags):
     window(

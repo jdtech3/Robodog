@@ -1,5 +1,5 @@
-#ifndef UTIL__H
-#define UTIL__H
+#ifndef SDL3_WRAPPER__H_
+#define SDL3_WRAPPER__H_
 
 #define SDL_MAIN_HANDLED
 
