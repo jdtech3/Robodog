@@ -54,7 +54,7 @@ void RectPrism::draw(const Camera& camera){
     shaders.setUniform("u_model", model, false);
     shaders.setUniform("u_vp", camera.get_vp(), false);
     shaders.setUniform("orientation", glm::vec3(
-        (2.f*M_PI/KEYHITS_PER_ROTATION)*(camera.rotationState.x.actual),
+        (2.f*M_PI/KEYHITS_PER_ROTATION)*(camera.rotationState.x.actual)-M_PI/2.f,
         (2.f*M_PI/KEYHITS_PER_ROTATION)*(camera.rotationState.y.actual),
         (2.f*M_PI/KEYHITS_PER_ROTATION)*(camera.rotationState.z.actual)
     ));
