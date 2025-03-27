@@ -130,7 +130,7 @@ void Legs::draw(const Camera& camera){
     draw_single_leg(camera, start, theta_tmp);
 }
 
-glm::vec3 Legs::ik(const glm::vec3& r){
+glm::vec3 Legs::ik_BR(const glm::vec3& r){
     float L1 = LEG_L - LEG_S;
     float L2 = LEG_L - LEG_S;
     float L1_2 = L1*L1;
@@ -146,4 +146,16 @@ glm::vec3 Legs::ik(const glm::vec3& r){
         a2+a4,
         a3
     );
+}
+
+glm::vec3 Legs::ik_FR(const glm::vec3& r){
+    return ik_BR(glm::vec3(r.x, -r.y, r.z));
+}
+
+glm::vec3 Legs::ik_FL(const glm::vec3& r){
+    return ik_BR(glm::vec3(-r.x, -r.y, r.z));
+}
+
+glm::vec3 Legs::ik_BL(const glm::vec3& r){
+    return ik_BR(glm::vec3(-r.x, r.y, r.z));
 }
