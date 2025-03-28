@@ -111,22 +111,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    // /* USER CODE END WHILE */
-    // set_pwm_val(&htim4, 500, TIM_CHANNEL_1);
-    // set_pwm_val(&htim4, 500, TIM_CHANNEL_2);
-    // int endpoint = 800;
-    // for (int i = 500; i <= endpoint; i += 10) {
-    //   set_pwm_val(&htim4, i, TIM_CHANNEL_1);
-    //   HAL_Delay(1);
-    //   set_pwm_val(&htim4, i, TIM_CHANNEL_2);
-    //   HAL_Delay(50);
-    // }
-    // for (int i = endpoint; i >= 500; i -= 10) {
-    //   set_pwm_val(&htim4, i, TIM_CHANNEL_1);
-    //   HAL_Delay(1);
-    //   set_pwm_val(&htim4, i, TIM_CHANNEL_2);
-    //   HAL_Delay(50);
-    // }
+    /* USER CODE END WHILE */
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
