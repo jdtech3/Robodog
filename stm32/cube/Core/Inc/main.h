@@ -31,7 +31,10 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdint.h>
+#include <stdio.h>
 
+#include "robot_main_c.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
