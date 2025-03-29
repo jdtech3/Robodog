@@ -47,7 +47,7 @@ constexpr float BODY_Z =  0.5f;
 constexpr float LEG_L1 =  1.f;
 constexpr float LEG_L2 =  1.f;
 
-constexpr float MOVEMENT_ATTENUATION = 0.1f;
+constexpr float MOVEMENT_GAIN = 0.1f;
 
 MPU6050 mpu;
 
@@ -126,10 +126,10 @@ void loop(){
             float magv = v.getMagnitude();
             float m = std::acos(qGet.w/magq)/magv;
             Quaternion lnq(std::log(magq), m*qGet.x, m*qGet.y, m*qGet.z);
-            lnq.w *= MOVEMENT_ATTENUATION;
-            lnq.x *= MOVEMENT_ATTENUATION;
-            lnq.y *= MOVEMENT_ATTENUATION;
-            lnq.z *= MOVEMENT_ATTENUATION;
+            lnq.w *= MOVEMENT_GAIN;
+            lnq.x *= MOVEMENT_GAIN;
+            lnq.y *= MOVEMENT_GAIN;
+            lnq.z *= MOVEMENT_GAIN;
             v = VectorFloat(lnq.x, lnq.y, lnq.z);
             magv = v.getMagnitude();
             float n = std::exp(lnq.w);
