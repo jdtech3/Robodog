@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <I2Cdev.h>
+#include <cmath>
 #include <MPU6050_6Axis_MotionApps20.h>
 
 // Thanks to Jeff Rowberg's example code for the MPU6050 DMP6
@@ -45,6 +46,8 @@ constexpr float BODY_Y =  3.f;
 constexpr float BODY_Z =  0.5f;
 constexpr float LEG_L1 =  1.f;
 constexpr float LEG_L2 =  1.f;
+
+constexpr float MOVEMENT_ATTENUATION = 0.1f;
 
 MPU6050 mpu;
 
@@ -117,7 +120,21 @@ void loop(){
 
     if (mpu.dmpGetCurrentFIFOPacket(fifoBuffer)) {
         if(!mpu.dmpGetQuaternion(&qGet, fifoBuffer)){
-            qSend = qGet;
+            // Quaternion q = qGet;
+            VectorFloat v(qGet.x, qGet.y, qGet.z);
+            float magq = qGet.getMagnitude();
+            float magv = v.getMagnitude();
+            float m = std::acos(qGet.w/magq)/magv;
+            Quaternion lnq(std::log(magq), m*qGet.x, m*qGet.y, m*qGet.z);
+            lnq.w *= MOVEMENT_ATTENUATION;
+            lnq.x *= MOVEMENT_ATTENUATION;
+            lnq.y *= MOVEMENT_ATTENUATION;
+            lnq.z *= MOVEMENT_ATTENUATION;
+            v = VectorFloat(lnq.x, lnq.y, lnq.z);
+            magv = v.getMagnitude();
+            float n = std::exp(lnq.w);
+            m = n*std::sin(magv)/magv;
+            qSend = Quaternion(n*std::cos(magv), m*v.x, m*v.y, m*v.z);
         }
     }
 
