@@ -31,7 +31,7 @@ void MotionVar::update(){
 }
 
 void MotionVar::update_factor(float fps){
-    rotFactor = (std::log(1.f/MotionVar::CLAMP_THRESHOLD)/MotionVar::CONVERGENCE_TIME)/fps;
+    rotFactor = (std::log(1.f/CLAMP_THRESHOLD)/CONVERGENCE_TIME)/fps;
 }
 
 
