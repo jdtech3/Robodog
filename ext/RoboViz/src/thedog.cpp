@@ -75,12 +75,25 @@ Body::Body(const std::filesystem::path& vertex_shader, const std::filesystem::pa
 {}
 
 Legs::Legs(const std::filesystem::path& vertex_shader, const std::filesystem::path& fragment_shader):
-    RectPrism(
-        glm::vec3(0,0,0),
-        glm::vec3(LEG_S,LEG_S,LEG_L),
-        glm::vec4(0.f, 1.f, 0.f, 1.f),
-        vertex_shader,
-        fragment_shader),
+    prism{
+        RectPrism(
+            glm::vec3(0,0,0),
+            glm::vec3(LEG_L0,LEG_S,LEG_S),
+            glm::vec4(0.f, 1.f, 0.f, 1.f),
+            vertex_shader,
+            fragment_shader),
+        RectPrism(
+            glm::vec3(0,0,0),
+            glm::vec3(LEG_S,LEG_S,LEG_L1),
+            glm::vec4(0.f, 0.f, 1.f, 1.f),
+            vertex_shader,
+            fragment_shader),
+        RectPrism(
+            glm::vec3(0,0,0),
+            glm::vec3(LEG_S,LEG_S,LEG_L2),
+            glm::vec4(1.f, 1.f, 0.f, 1.f),
+            vertex_shader,
+            fragment_shader)},
     theta{
         glm::vec3(0.f, glm::radians(90.f), glm::radians(180.f)),
         glm::vec3(0.f, glm::radians(90.f), glm::radians(180.f)),
@@ -88,62 +101,78 @@ Legs::Legs(const std::filesystem::path& vertex_shader, const std::filesystem::pa
         glm::vec3(0.f, glm::radians(90.f), glm::radians(180.f))}
 {}
 
-void Legs::draw_single_leg(const Camera& camera, const glm::vec3& start, const glm::vec3& theta) {
-    model = glm::mat4(1.f);
-    model = glm::translate(model, glm::vec3(start.x,start.y,start.z));
-    model = glm::rotate(model, theta[0], glm::vec3(0.f, -1.f, 0.f));
-    model = glm::rotate(model, theta[1]-glm::radians(90.f), glm::vec3(-1.f, 0.f, 0.f));
-    model = glm::translate(model, glm::vec3(0.f,0.f,(-LEG_L)/2));
-    color = glm::vec4(0.f, 1.f, 0.f, 1.f);
-    RectPrism::draw(camera);
+void Legs::draw_single_leg(const Camera& camera, const glm::vec3& theta, const glm::mat4& model) {
 
-    model = glm::mat4(1.f);
-    model = glm::translate(model, glm::vec3(start.x,start.y,start.z));
-    model = glm::rotate(model, theta[0], glm::vec3(0.f, -1.f, 0.f));
-    model = glm::rotate(model, theta[1]-glm::radians(90.f), glm::vec3(-1.f, 0.f, 0.f));
-    model = glm::translate(model, glm::vec3(0.f,0.f,(-LEG_L)));
-    model = glm::rotate(model, glm::radians(180.f)-theta[2], glm::vec3(1.f, 0.f, 0.f));
-    model = glm::translate(model, glm::vec3(0.f,0.f,(-LEG_L)/2));
-    color = glm::vec4(0.f, 0.f, 1.f, 1.f);
-    RectPrism::draw(camera);
+    glm::mat4 m(model);
+    m = glm::translate( m, glm::vec3(BODY_X/2,-BODY_Y/2,-BODY_Z/2));
+    m = glm::rotate(    m, theta[0], glm::vec3(0.f, -1.f, 0.f));
+    m = glm::translate( m, glm::vec3(LEG_S/2,0.f,0.f));
+    prism[0].model = m;
+    prism[0].draw(camera);
+
+    m = model;
+    m = glm::translate( m, glm::vec3(BODY_X/2,-BODY_Y/2,-BODY_Z/2));
+    m = glm::rotate(    m, theta[0], glm::vec3(0.f, -1.f, 0.f));
+    m = glm::translate( m, glm::vec3(LEG_L0, 0.f, 0.f));
+    m = glm::rotate(    m, theta[1]-glm::radians(90.f), glm::vec3(-1.f, 0.f, 0.f));
+    m = glm::translate( m, glm::vec3(0.f,0.f,(-LEG_L1)/2));
+    prism[1].model = m;
+    prism[1].draw(camera);
+
+    m = glm::mat4(model);
+    m = glm::translate(m, glm::vec3(BODY_X/2,-BODY_Y/2,-BODY_Z/2));
+    m = glm::rotate(m, theta[0], glm::vec3(0.f, -1.f, 0.f));
+    m = glm::translate(m, glm::vec3(LEG_L0, 0.f, 0.f));
+    m = glm::rotate(m, theta[1]-glm::radians(90.f), glm::vec3(-1.f, 0.f, 0.f));
+    m = glm::translate(m, glm::vec3(0.f,0.f,(-LEG_L1)));
+    m = glm::rotate(m, theta[2]+glm::radians(180.f), glm::vec3(-1.f, 0.f, 0.f));
+    m = glm::translate(m, glm::vec3(0.f,0.f,(-LEG_L2)/2));
+    prism[2].model = m;
+    prism[2].draw(camera);
 }
 
 void Legs::draw(const Camera& camera){
     glm::vec3 start, theta_tmp;
     start = glm::vec3(BODY_X/2,-BODY_Y/2,-BODY_Z/2);
-    theta_tmp = theta[0];
-    draw_single_leg(camera, start, theta_tmp);
-    start = glm::vec3(BODY_X/2,BODY_Y/2,-BODY_Z/2);
-    theta_tmp = theta[1];
-    theta_tmp[1] = glm::radians(180.f)-theta_tmp[1];
-    theta_tmp[2] *= -1.f;
-    draw_single_leg(camera, start, theta_tmp);
-    start = glm::vec3(-BODY_X/2,BODY_Y/2,-BODY_Z/2);
-    theta_tmp = theta[2];
-    theta_tmp[0] *= -1.f;
-    theta_tmp[1] = glm::radians(180.f)-theta_tmp[1];
-    theta_tmp[2] *= -1.f;
-    draw_single_leg(camera, start, theta_tmp);
-    start = glm::vec3(-BODY_X/2,-BODY_Y/2,-BODY_Z/2);
-    theta_tmp = theta[3];
-    theta_tmp[0] *= -1.f;
-    draw_single_leg(camera, start, theta_tmp);
+    draw_single_leg(camera, theta[0], glm::mat4(
+        1.f, 0.f, 0.f, 0.f,
+        0.f, 1.f, 0.f, 0.f,
+        0.f, 0.f, 1.f, 0.f,
+        0.f, 0.f, 0.f, 1.f));
+    start = glm::vec3(BODY_X/2,-BODY_Y/2,-BODY_Z/2);
+    draw_single_leg(camera, theta[1], glm::mat4(
+        1.f,  0.f, 0.f, 0.f,
+        0.f, -1.f, 0.f, 0.f,
+        0.f,  0.f, 1.f, 0.f,
+        0.f,  0.f, 0.f, 1.f));
+    start = glm::vec3(BODY_X/2,-BODY_Y/2,-BODY_Z/2);
+    draw_single_leg(camera, theta[2], glm::mat4(
+        -1.f,  0.f, 0.f, 0.f,
+         0.f, -1.f, 0.f, 0.f,
+         0.f,  0.f, 1.f, 0.f,
+         0.f,  0.f, 0.f, 1.f));
+    start = glm::vec3(BODY_X/2,-BODY_Y/2,-BODY_Z/2);
+    draw_single_leg(camera, theta[3], glm::mat4(
+        -1.f, 0.f, 0.f, 0.f,
+         0.f, 1.f, 0.f, 0.f,
+         0.f, 0.f, 1.f, 0.f,
+         0.f, 0.f, 0.f, 1.f));
 }
 
 glm::vec3 Legs::ik_BR(glm::vec3 r){
-    float L1 = LEG_L/4.f;
-    float L2 = LEG_L;
-    float L3 = LEG_L;
-    float L2_2 = L2*L2;
-    float L3_2 = L3*L3;
-    float a1 = glm::acos(L1*glm::inversesqrt(r.x*r.x + r.z*r.z)) - glm::atan(-r.z, r.x);
-    r.x -= L1*glm::cos(a1);
-    r.z -= L1*glm::sin(a1);
-    float rlen = glm::length(r);
-    float rlen2 = rlen*rlen;
-    float a2 = glm::acos(glm::clamp( (L2_2 + rlen2 - L3_2)/(2*L2*rlen)  , -1.f, 1.f ));
-    float a3 = glm::acos(glm::clamp( (L2_2 + L3_2 - rlen2)/(2*L2*L3)    , -1.f, 1.f ));
-    float a4 = glm::acos(glm::clamp( r.y/rlen                           , -1.f, 1.f ));
+    const float L0 = LEG_L0;
+    const float L1 = LEG_L1;
+    const float L2 = LEG_L2;
+    const float L1_2 = L1*L1;
+    const float L2_2 = L2*L2;
+    const float a1 = glm::acos(L0*glm::inversesqrt(r.x*r.x + r.z*r.z)) - glm::atan(-r.z, r.x);
+    r.x -= L0*glm::cos(a1);
+    r.z -= L0*glm::sin(a1);
+    const float rlen = glm::length(r);
+    const float rlen2 = rlen*rlen;
+    const float a2 = glm::acos(glm::clamp( (L1_2 + rlen2 - L2_2)/(2*L1*rlen)  , -1.f, 1.f ));
+    const float a3 = glm::acos(glm::clamp( (L1_2 + L2_2 - rlen2)/(2*L1*L2)    , -1.f, 1.f ));
+    const float a4 = glm::acos(glm::clamp( r.y/rlen                           , -1.f, 1.f ));
     // return glm::vec3(
     //     glm::clamp(a1       , glm::radians(-45.f), glm::radians(45.f)),
     //     glm::clamp(a2+a4    , glm::radians(90.f-45.f), glm::radians(90.f+45.f)),

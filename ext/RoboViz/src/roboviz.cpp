@@ -39,7 +39,12 @@ int main(int argc, char* argv[]){
             exepath / "../share/RoboViz/cube_fs.glsl"
         );
 
-        glm::vec3 leg_rel_pos(0.f, 0.f, -2*LEG_L);
+        glm::vec3 leg_rel_pos[] = {
+            glm::vec3( LEG_L0, 0.f, -LEG_L1-LEG_L2),
+            glm::vec3( LEG_L0, 0.f, -LEG_L1-LEG_L2),
+            glm::vec3(-LEG_L0, 0.f, -LEG_L1-LEG_L2),
+            glm::vec3(-LEG_L0, 0.f, -LEG_L1-LEG_L2)
+        };
 
         PRINT_DEBUG("Cube Created\n");
 
@@ -135,22 +140,22 @@ int main(int argc, char* argv[]){
                         }
                         break;
                     case SDLK_Q:
-                        leg_rel_pos.x += 0.01;
+                        for(auto& l : leg_rel_pos) l.x += 0.01;
                         break;
                     case SDLK_A:
-                        leg_rel_pos.x -= 0.01;
+                        for(auto& l : leg_rel_pos) l.x -= 0.01;
                         break;
                     case SDLK_W:
-                        leg_rel_pos.y += 0.01;
+                        for(auto& l : leg_rel_pos) l.y += 0.01;
                         break;
                     case SDLK_S:
-                        leg_rel_pos.y -= 0.01;
+                        for(auto& l : leg_rel_pos) l.y -= 0.01;
                         break;
                     case SDLK_E:
-                        leg_rel_pos.z += 0.01;
+                        for(auto& l : leg_rel_pos) l.z += 0.01;
                         break;
                     case SDLK_D:
-                        leg_rel_pos.z -= 0.01;
+                        for(auto& l : leg_rel_pos) l.z -= 0.01;
                         break;
                     case SDLK_ESCAPE:
                         keepRunning = false;
@@ -163,10 +168,10 @@ int main(int argc, char* argv[]){
 
             } // while(SDL_PollEvent(&event))
 
-            legs.theta[0] = Legs::ik_BR(leg_rel_pos);
-            legs.theta[1] = Legs::ik_FR(leg_rel_pos);
-            legs.theta[2] = Legs::ik_FL(leg_rel_pos);
-            legs.theta[3] = Legs::ik_BL(leg_rel_pos);
+            legs.theta[0] = Legs::ik_BR(leg_rel_pos[0]);
+            legs.theta[1] = Legs::ik_FR(leg_rel_pos[1]);
+            legs.theta[2] = Legs::ik_FL(leg_rel_pos[2]);
+            legs.theta[3] = Legs::ik_BL(leg_rel_pos[3]);
 
             /* FPS related stuff */
             fps.compute();
