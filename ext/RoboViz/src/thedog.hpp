@@ -44,10 +44,10 @@ public:
     Legs(const std::filesystem::path& vertex_shader, const std::filesystem::path& fragment_shader);
     virtual void draw(const Camera& camera) override;
 
-    static glm::vec3 ik_BR(const glm::vec3& r);
-    static glm::vec3 ik_FR(const glm::vec3& r);
-    static glm::vec3 ik_FL(const glm::vec3& r);
-    static glm::vec3 ik_BL(const glm::vec3& r);
+    static glm::vec3 ik_BR(glm::vec3 r);
+    static glm::vec3 ik_FR(glm::vec3 r);
+    static glm::vec3 ik_FL(glm::vec3 r);
+    static glm::vec3 ik_BL(glm::vec3 r);
 
 private:
     void draw_single_leg(const Camera& camera, const glm::vec3& start, const glm::vec3& theta);

@@ -130,16 +130,19 @@ void Legs::draw(const Camera& camera){
     draw_single_leg(camera, start, theta_tmp);
 }
 
-glm::vec3 Legs::ik_BR(const glm::vec3& r){
-    float L1 = LEG_L;
+glm::vec3 Legs::ik_BR(glm::vec3 r){
+    float L1 = LEG_L/4.f;
     float L2 = LEG_L;
-    float L1_2 = L1*L1;
+    float L3 = LEG_L;
     float L2_2 = L2*L2;
+    float L3_2 = L3*L3;
+    float a1 = glm::acos(L1*glm::inversesqrt(r.x*r.x + r.z*r.z)) - glm::atan(-r.z, r.x);
+    r.x -= L1*glm::cos(a1);
+    r.z -= L1*glm::sin(a1);
     float rlen = glm::length(r);
     float rlen2 = rlen*rlen;
-    float a1 = glm::atan(r.x, -r.z);
-    float a2 = glm::acos(glm::clamp( (L1_2 + rlen2 - L2_2)/(2*L1*rlen)  , -1.f, 1.f ));
-    float a3 = glm::acos(glm::clamp( (L1_2 + L2_2 - rlen2)/(2*L1*L2)    , -1.f, 1.f ));
+    float a2 = glm::acos(glm::clamp( (L2_2 + rlen2 - L3_2)/(2*L2*rlen)  , -1.f, 1.f ));
+    float a3 = glm::acos(glm::clamp( (L2_2 + L3_2 - rlen2)/(2*L2*L3)    , -1.f, 1.f ));
     float a4 = glm::acos(glm::clamp( r.y/rlen                           , -1.f, 1.f ));
     // return glm::vec3(
     //     glm::clamp(a1       , glm::radians(-45.f), glm::radians(45.f)),
@@ -153,14 +156,18 @@ glm::vec3 Legs::ik_BR(const glm::vec3& r){
     );
 }
 
-glm::vec3 Legs::ik_FR(const glm::vec3& r){
-    return ik_BR(glm::vec3(r.x, -r.y, r.z));
+glm::vec3 Legs::ik_FR(glm::vec3 r){
+    r.y *= -1;
+    return ik_BR(r);
 }
 
-glm::vec3 Legs::ik_FL(const glm::vec3& r){
-    return ik_BR(glm::vec3(-r.x, -r.y, r.z));
+glm::vec3 Legs::ik_FL(glm::vec3 r){
+    r.x *= -1;
+    r.y *= -1;
+    return ik_BR(r);
 }
 
-glm::vec3 Legs::ik_BL(const glm::vec3& r){
-    return ik_BR(glm::vec3(-r.x, r.y, r.z));
+glm::vec3 Legs::ik_BL(glm::vec3 r){
+    r.x *= -1;
+    return ik_BR(r);
 }
