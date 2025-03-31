@@ -1,7 +1,6 @@
 #include <cmath>
 #include <Arduino.h>
 #include <Wire.h>
-#include <I2Cdev.h>
 #include <cmath>
 #include <MPU6050_6Axis_MotionApps20.h>
 #include "quat_helper.hpp"
