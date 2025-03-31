@@ -4,6 +4,7 @@
 #include <I2Cdev.h>
 #include <cmath>
 #include <MPU6050_6Axis_MotionApps20.h>
+#include "quat_helper.hpp"
 
 // Thanks to Jeff Rowberg's example code for the MPU6050 DMP6
 
@@ -120,21 +121,7 @@ void loop(){
 
     if (mpu.dmpGetCurrentFIFOPacket(fifoBuffer)) {
         if(!mpu.dmpGetQuaternion(&qGet, fifoBuffer)){
-            // Quaternion q = qGet;
-            VectorFloat v(qGet.x, qGet.y, qGet.z);
-            float magq = qGet.getMagnitude();
-            float magv = v.getMagnitude();
-            float m = std::acos(qGet.w/magq)/magv;
-            Quaternion lnq(std::log(magq), m*qGet.x, m*qGet.y, m*qGet.z);
-            lnq.w *= MOVEMENT_GAIN;
-            lnq.x *= MOVEMENT_GAIN;
-            lnq.y *= MOVEMENT_GAIN;
-            lnq.z *= MOVEMENT_GAIN;
-            v = VectorFloat(lnq.x, lnq.y, lnq.z);
-            magv = v.getMagnitude();
-            float n = std::exp(lnq.w);
-            m = n*std::sin(magv)/magv;
-            qSend = Quaternion(n*std::cos(magv), m*v.x, m*v.y, m*v.z);
+            qSend = pow(qGet, MOVEMENT_GAIN);
         }
     }
 
