@@ -79,8 +79,8 @@ int main(int argc, char* argv[]){
             /* Render here */
             gli::clear(gli::ColorBufferBit | gli::DepthBufferBit);
 
-            body.draw(camera);
-            legs.draw(camera);
+            body.draw(camera, glm::quat());
+            legs.draw(camera, glm::quat());
 
             /* Swap front and back buffers */
             window.swap();

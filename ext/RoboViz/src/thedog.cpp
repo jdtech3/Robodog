@@ -74,6 +74,11 @@ Body::Body(const std::filesystem::path& vertex_shader, const std::filesystem::pa
         fragment_shader)
 {}
 
+void Body::draw(const Camera& camera, const glm::quat& orientation){
+    model = glm::mat4_cast(orientation);
+    RectPrism::draw(camera);
+}
+
 Legs::Legs(const std::filesystem::path& vertex_shader, const std::filesystem::path& fragment_shader):
     prism{
         RectPrism(
@@ -131,28 +136,29 @@ void Legs::draw_single_leg(const Camera& camera, const glm::vec3& theta, const g
     prism[2].draw(camera);
 }
 
-void Legs::draw(const Camera& camera){
+void Legs::draw(const Camera& camera, const glm::quat& orientation){
+    glm::mat4 orient = glm::mat4_cast(orientation);
     glm::vec3 start, theta_tmp;
     start = glm::vec3(BODY_X/2,-BODY_Y/2,-BODY_Z/2);
-    draw_single_leg(camera, theta[0], glm::mat4(
+    draw_single_leg(camera, theta[0], orient*glm::mat4(
         1.f, 0.f, 0.f, 0.f,
         0.f, 1.f, 0.f, 0.f,
         0.f, 0.f, 1.f, 0.f,
         0.f, 0.f, 0.f, 1.f));
     start = glm::vec3(BODY_X/2,-BODY_Y/2,-BODY_Z/2);
-    draw_single_leg(camera, theta[1], glm::mat4(
+    draw_single_leg(camera, theta[1], orient*glm::mat4(
         1.f,  0.f, 0.f, 0.f,
         0.f, -1.f, 0.f, 0.f,
         0.f,  0.f, 1.f, 0.f,
         0.f,  0.f, 0.f, 1.f));
     start = glm::vec3(BODY_X/2,-BODY_Y/2,-BODY_Z/2);
-    draw_single_leg(camera, theta[2], glm::mat4(
+    draw_single_leg(camera, theta[2], orient*glm::mat4(
         -1.f,  0.f, 0.f, 0.f,
          0.f, -1.f, 0.f, 0.f,
          0.f,  0.f, 1.f, 0.f,
          0.f,  0.f, 0.f, 1.f));
     start = glm::vec3(BODY_X/2,-BODY_Y/2,-BODY_Z/2);
-    draw_single_leg(camera, theta[3], glm::mat4(
+    draw_single_leg(camera, theta[3], orient*glm::mat4(
         -1.f, 0.f, 0.f, 0.f,
          0.f, 1.f, 0.f, 0.f,
          0.f, 0.f, 1.f, 0.f,

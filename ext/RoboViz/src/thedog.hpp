@@ -7,6 +7,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #endif
 #include <glm/gtx/transform.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 #include "GLider/GLider.hpp"
 #include "utils.hpp"
@@ -37,6 +38,7 @@ public:
 class Body : public RectPrism{
 public:
     Body(const std::filesystem::path& vertex_shader, const std::filesystem::path& fragment_shader);
+    void draw(const Camera& camera, const glm::quat& orientation);
 };
 
 class Legs{
@@ -45,7 +47,7 @@ public:
     glm::vec3 theta[4];
 
     Legs(const std::filesystem::path& vertex_shader, const std::filesystem::path& fragment_shader);
-    void draw(const Camera& camera);
+    void draw(const Camera& camera, const glm::quat& orientation);
 
     static glm::vec3 ik_BR(glm::vec3 r);
     static glm::vec3 ik_FR(glm::vec3 r);

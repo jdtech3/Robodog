@@ -114,8 +114,8 @@ int main(int argc, char* argv[]){
             /* Render here */
             gli::clear(gli::ColorBufferBit | gli::DepthBufferBit);
 
-            body.draw(camera);
-            legs.draw(camera);
+            body.draw(camera, dog_orientation);
+            legs.draw(camera, dog_orientation);
 
             /* Swap front and back buffers */
             window.swap();
