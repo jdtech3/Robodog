@@ -59,8 +59,7 @@ void setupSerial(asio::serial_port& serial, const char* port){
     SDL_Log("MPU DMP Initialized");
 }
 
-template<typename T>
-void retrieveOrientation(T& asio_comm, glm::quat& orientation, float& z){
+void retrieveOrientation(asio::serial_port& asio_comm, glm::quat& orientation, float& z){
     char c = 1;
     asio::write(asio_comm, asio::buffer(&c, 1));
     struct {float w,x,y,z; } buf;
@@ -70,6 +69,20 @@ void retrieveOrientation(T& asio_comm, glm::quat& orientation, float& z){
     orientation.x = buf.x;
     orientation.y = buf.y;
     orientation.z = buf.z;
+}
+
+void retrieveOrientation(asio::ip::tcp::socket& asio_comm, glm::quat& orientation, float& z){
+    if(asio_comm.available()){
+        struct {float w,x,y,z; } buf;
+        do{
+            asio::read(asio_comm, asio::buffer(&buf, sizeof(buf)));
+            asio::read(asio_comm, asio::buffer(&z, sizeof(z)));
+        }while(asio_comm.available() >= 5);
+        orientation.w = buf.w;
+        orientation.x = buf.x;
+        orientation.y = buf.y;
+        orientation.z = buf.z;
+    }
 }
 
 int main(int argc, char* argv[]){

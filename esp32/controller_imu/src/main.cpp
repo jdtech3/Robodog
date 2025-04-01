@@ -106,9 +106,7 @@ void loop(){
     }
 
     for(WiFiClient& c : client){
-        if(c.connected() && c.available()){
-            do c.read();
-            while(c.available());
+        if(c.connected()){
             float z = (LEG_L1+LEG_L2)/2.f;
             c.write((char*)&qSend, sizeof(qSend));
             c.write((char*)&z, sizeof(z));
