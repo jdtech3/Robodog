@@ -72,12 +72,12 @@ void retrieveOrientation(asio::serial_port& asio_comm, glm::quat& orientation, f
 }
 
 void retrieveOrientation(asio::ip::tcp::socket& asio_comm, glm::quat& orientation, float& z){
-    if(asio_comm.available() >= 5){
+    if(asio_comm.available() >= 5*sizeof(float)){
         struct {float w,x,y,z; } buf;
         do{
             asio::read(asio_comm, asio::buffer(&buf, sizeof(buf)));
             asio::read(asio_comm, asio::buffer(&z, sizeof(z)));
-        }while(asio_comm.available() >= 5);
+        }while(asio_comm.available() >= 5*sizeof(float));
         orientation.w = buf.w;
         orientation.x = buf.x;
         orientation.y = buf.y;
