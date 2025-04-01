@@ -12,6 +12,26 @@
 #include "utils.hpp"
 #include "thedog.hpp"
 
+// #define ORIENT_USE_SERIAL
+
+void setupTCPClient(asio::ip::tcp::socket& sock, const std::string& interface_name, const asio::ip::tcp::endpoint& end_point){
+
+    struct Option_BindToDevice{
+        std::string interface_name;
+        int level(const asio::ip::tcp&) const{return SOL_SOCKET;}
+        int name(const asio::ip::tcp&) const{return SO_BINDTODEVICE;}
+        const char* data(const asio::ip::tcp&) const{return interface_name.c_str();}
+        std::size_t size(const asio::ip::tcp&) const{return interface_name.size();}
+    };
+
+    if(!sock.is_open()) sock.open(asio::ip::tcp::v4());
+    if(!sock.is_open()) throw std::runtime_error("socket cannot be opened");
+    sock.set_option(Option_BindToDevice(interface_name));
+    std::printf("conntecing... ");
+    sock.connect(end_point);
+    std::printf("connected\n");
+}
+
 void setupSerial(asio::serial_port& serial, const char* port){
 
     serial.open(port);
@@ -39,12 +59,13 @@ void setupSerial(asio::serial_port& serial, const char* port){
     SDL_Log("MPU DMP Initialized");
 }
 
-void retrieveOrientation(asio::serial_port& serial, glm::quat& orientation, float& z){
+template<typename T>
+void retrieveOrientation(T& asio_comm, glm::quat& orientation, float& z){
     char c = 1;
-    asio::write(serial, asio::buffer(&c, 1));
+    asio::write(asio_comm, asio::buffer(&c, 1));
     struct {float w,x,y,z; } buf;
-    asio::read(serial, asio::buffer(&buf, sizeof(buf)));
-    asio::read(serial, asio::buffer(&z, sizeof(z)));
+    asio::read(asio_comm, asio::buffer(&buf, sizeof(buf)));
+    asio::read(asio_comm, asio::buffer(&z, sizeof(z)));
     orientation.w = buf.w;
     orientation.x = buf.x;
     orientation.y = buf.y;
@@ -53,19 +74,35 @@ void retrieveOrientation(asio::serial_port& serial, glm::quat& orientation, floa
 
 int main(int argc, char* argv[]){
 
+    #ifdef ORIENT_USE_SERIAL
     if(argc < 2){
         std::printf("Please Enter Serial Port\n");
         return 1;
     }
+    #else
+    if(argc < 4){
+        std::printf("Please Enter interface, ip address, and port\n");
+        return 1;
+    }
+    #endif
 
     try{
 
         asio::io_context io;
-        asio::serial_port serial(io);
+
+        #ifdef ORIENT_USE_SERIAL
+        asio::serial_port asio_comm(io);
+        #else
+        asio::ip::tcp::socket asio_comm(io);
+        #endif
         glm::quat dog_orientation;
         float dog_z;
 
-        setupSerial(serial, argv[1]);
+        #ifdef ORIENT_USE_SERIAL
+        setupSerial(asio_comm, argv[1]);
+        #else
+        setupTCPClient(asio_comm, argv[1], asio::ip::tcp::endpoint(asio::ip::make_address_v4(argv[2]), std::atoi(argv[3])));
+        #endif
 
         SDL sdl(3,1);
 
@@ -185,7 +222,7 @@ int main(int argc, char* argv[]){
 
             } // while(SDL_PollEvent(&event))
 
-            retrieveOrientation(serial, dog_orientation, dog_z);
+            retrieveOrientation(asio_comm, dog_orientation, dog_z);
 
             glm::vec3 BR_foot( BODY_X/2.f, -BODY_Y/2.f, 0);
             glm::vec3 FR_foot( BODY_X/2.f,  BODY_Y/2.f, 0);
