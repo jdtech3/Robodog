@@ -59,25 +59,23 @@ void setupSerial(asio::serial_port& serial, const char* port){
     SDL_Log("MPU DMP Initialized");
 }
 
-void retrieveOrientation(asio::serial_port& asio_comm, glm::quat& orientation, float& z){
+void retrieveOrientation(asio::serial_port& asio_comm, glm::quat& orientation){
     char c = 1;
     asio::write(asio_comm, asio::buffer(&c, 1));
     struct {float w,x,y,z; } buf;
     asio::read(asio_comm, asio::buffer(&buf, sizeof(buf)));
-    asio::read(asio_comm, asio::buffer(&z, sizeof(z)));
     orientation.w = buf.w;
     orientation.x = buf.x;
     orientation.y = buf.y;
     orientation.z = buf.z;
 }
 
-void retrieveOrientation(asio::ip::tcp::socket& asio_comm, glm::quat& orientation, float& z){
-    if(asio_comm.available() >= 5*sizeof(float)){
+void retrieveOrientation(asio::ip::tcp::socket& asio_comm, glm::quat& orientation){
+    if(asio_comm.available() >= 4*sizeof(float)){
         struct {float w,x,y,z; } buf;
         do{
             asio::read(asio_comm, asio::buffer(&buf, sizeof(buf)));
-            asio::read(asio_comm, asio::buffer(&z, sizeof(z)));
-        }while(asio_comm.available() >= 5*sizeof(float));
+        }while(asio_comm.available() >= 4*sizeof(float));
         orientation.w = buf.w;
         orientation.x = buf.x;
         orientation.y = buf.y;
@@ -109,7 +107,6 @@ int main(int argc, char* argv[]){
         asio::ip::tcp::socket asio_comm(io);
         #endif
         glm::quat dog_orientation;
-        float dog_z;
 
         #ifdef ORIENT_USE_SERIAL
         setupSerial(asio_comm, argv[1]);
@@ -235,7 +232,7 @@ int main(int argc, char* argv[]){
 
             } // while(SDL_PollEvent(&event))
 
-            retrieveOrientation(asio_comm, dog_orientation, dog_z);
+            retrieveOrientation(asio_comm, dog_orientation);
 
             glm::vec3 BR_foot( BODY_X/2.f, -BODY_Y/2.f, 0);
             glm::vec3 FR_foot( BODY_X/2.f,  BODY_Y/2.f, 0);

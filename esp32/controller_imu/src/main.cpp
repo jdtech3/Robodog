@@ -6,11 +6,6 @@
 #include <MPU6050_6Axis_MotionApps20.h>
 #include "quat_helper.hpp"
 
-constexpr float BODY_X =  2.f;
-constexpr float BODY_Y =  3.f;
-constexpr float BODY_Z =  0.5f;
-constexpr float LEG_L1 =  1.f;
-constexpr float LEG_L2 =  1.f;
 constexpr float MOVEMENT_GAIN = 0.1f;
 constexpr unsigned long CLIENT_UPDATE_MS = 50;
 constexpr std::size_t NCLIENTS = 5;
@@ -110,9 +105,7 @@ void loop(){
         client_updated_last = millis();
         for(WiFiClient& c : client){
             if(c.connected()){
-                float z = (LEG_L1+LEG_L2)/2.f;
                 c.write((char*)&qSend, sizeof(qSend));
-                c.write((char*)&z, sizeof(z));
             }
         }
     }
@@ -120,9 +113,7 @@ void loop(){
     if(Serial.available()){
         do Serial.read();
         while(Serial.available());
-        float z = (LEG_L1+LEG_L2)/2.f;
         Serial.write((char*)&qSend, sizeof(qSend));
-        Serial.write((char*)&z, sizeof(z));
     }
     
 }

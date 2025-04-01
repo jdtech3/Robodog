@@ -11,7 +11,7 @@ const char* const SERVER_IP = "192.168.1.100";
 const std::uint16_t SERVER_PORT = 1000;
 
 WiFiClient client;
-float rbuf[5] = {};
+float rbuf[4] = {0};
 
 void connect_client(){
     Serial.println("connecting...");
@@ -52,6 +52,6 @@ void loop() {
         do{
             client.read((uint8_t*)rbuf, sizeof(rbuf));
         }while(client.available() >= sizeof(rbuf));
-        Serial.printf("%5.5f, %5.5f, %5.5f, %5.5f, %5.5f\n", rbuf[0], rbuf[1], rbuf[2], rbuf[3], rbuf[4]);
+        Serial.printf("%5.5f, %5.5f, %5.5f, %5.5f\n", rbuf[0], rbuf[1], rbuf[2], rbuf[3]);
     }
 }
