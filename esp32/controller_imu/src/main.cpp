@@ -11,8 +11,9 @@ constexpr float BODY_Y =  3.f;
 constexpr float BODY_Z =  0.5f;
 constexpr float LEG_L1 =  1.f;
 constexpr float LEG_L2 =  1.f;
-
 constexpr float MOVEMENT_GAIN = 0.1f;
+constexpr unsigned long CLIENT_UPDATE_MS = 50;
+constexpr std::size_t NCLIENTS = 5;
 
 const char* const WIFI_SSID = "koala";
 const char* const WIFI_PWRD = "esp32esp32";
@@ -24,6 +25,8 @@ constexpr int PUBLISH_PORT = 1000;
 MPU6050 mpu;
 WiFiServer server(PUBLISH_PORT);
 uint8_t fifoBuffer[64];
+WiFiClient client[NCLIENTS];
+unsigned long client_updated_last = 0;
 
 Quaternion qGet, qSend;
 
@@ -87,8 +90,6 @@ void setup(){
 
 }
 
-WiFiClient client[5];
-
 void loop(){
 
     for(WiFiClient& c : client){
@@ -105,11 +106,14 @@ void loop(){
         }
     }
 
-    for(WiFiClient& c : client){
-        if(c.connected()){
-            float z = (LEG_L1+LEG_L2)/2.f;
-            c.write((char*)&qSend, sizeof(qSend));
-            c.write((char*)&z, sizeof(z));
+    if(millis() - client_updated_last >= CLIENT_UPDATE_MS){
+        client_updated_last = millis();
+        for(WiFiClient& c : client){
+            if(c.connected()){
+                float z = (LEG_L1+LEG_L2)/2.f;
+                c.write((char*)&qSend, sizeof(qSend));
+                c.write((char*)&z, sizeof(z));
+            }
         }
     }
 
