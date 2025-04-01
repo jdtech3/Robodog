@@ -50,12 +50,7 @@ constexpr float LEG_L2 =  1.f;
 constexpr float MOVEMENT_GAIN = 0.1f;
 
 MPU6050 mpu;
-
-// MPU control/status vars
-uint8_t devStatus;      // return status after each device operation (0 = success, !0 = error)
-uint16_t packetSize;    // expected DMP packet size (default is 42 bytes)
-uint16_t fifoCount;     // count of all bytes currently in FIFO
-uint8_t fifoBuffer[64]; // FIFO storage buffer
+uint8_t fifoBuffer[64];
 
 Quaternion qGet, qSend;
 
@@ -68,13 +63,12 @@ void waitTillProceedSignal(){
     }while(!proceed);
 }
 
-int initializeEverything(){
+int setup_mpu6050(){
 
     mpu.initialize();
-    // pinMode(INTERRUPT_PIN, INPUT);
     if(!mpu.testConnection()) return 1;
 
-    devStatus = mpu.dmpInitialize();
+    uint8_t devStatus = mpu.dmpInitialize();
 
     // supply your own gyro offsets here, scaled for min sensitivity
     mpu.setXGyroOffset(-300);
@@ -89,9 +83,6 @@ int initializeEverything(){
 
     mpu.setDMPEnabled(true);
 
-    // get expected DMP packet size for later comparison
-    packetSize = mpu.dmpGetFIFOPacketSize();
-
     return 0;
 
 }
@@ -103,11 +94,8 @@ void setup(){
 
     Serial.begin(115200, SERIAL_8E1);
 
-    int err = initializeEverything();
+    int err = setup_mpu6050();
     if(err) Serial.println("error starting mpu6050");
-
-    Serial.printf("qSend: %d bytes\n", sizeof(qSend));
-    Serial.printf("z: %d bytes\n", sizeof(float));
 
     Serial.write(0xFF);
     Serial.write(err);
