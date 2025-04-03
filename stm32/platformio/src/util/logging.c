@@ -1,4 +1,4 @@
-#include "logging.h"
+#include "util/logging.h"
 
 
 #define CLEAR   "\x1b[0m"
@@ -14,6 +14,11 @@
 #define LEVEL_WARN  "[WARN] "
 #define LEVEL_ERR   "[ERR ] "
 
+int _write(int file, char *data, int len){
+    HAL_StatusTypeDef status = HAL_UART_Transmit(&huart3, (uint8_t*)data, len, HAL_MAX_DELAY);
+    return (status == HAL_OK ? len : 0);
+}
+
 void log_(log_level_t level, const char* context, const char* msg, bool print_newline, ...) {
     switch (level) {
         case DEBUG:
@@ -25,10 +30,10 @@ void log_(log_level_t level, const char* context, const char* msg, bool print_ne
         case INFO:
             printf(CYAN LEVEL_INFO "%s: " CLEAR, context);
             break;
-        case WARNING:
+        case WARN:
             printf(YELLOW LEVEL_WARN "%s: " CLEAR, context);
             break;
-        case ERROR:
+        case ERR:
             printf(RED LEVEL_ERR "%s: " CLEAR, context);
             break;
     }

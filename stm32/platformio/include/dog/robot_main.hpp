@@ -1,9 +1,12 @@
 #pragma once
 
+#include <memory>
+
 #include "glm/vec3.hpp"
 
-#include "logging.h"
-#include "kinematics.hpp"
+#include "util/logging.h"
+#include "dog/leg.hpp"
+#include "dog/servo.hpp"
 
 // Typedefs
 
@@ -18,22 +21,22 @@ typedef enum movement_type {
 class Robodog {
     public:
         Robodog(
-            TIM_HandleTypeDef *tim_BL,      // back left
-            TIM_HandleTypeDef *tim_BR,      // back right
-            TIM_HandleTypeDef *tim_FL,      // front left
-            TIM_HandleTypeDef *tim_FR,      // front right
-            UART_HandleTypeDef *uart
-        );
+            std::unique_ptr<Leg> leg_BL,
+            std::unique_ptr<Leg> leg_BR,
+            std::unique_ptr<Leg> leg_FL,
+            std::unique_ptr<Leg> leg_FR
+        ) : leg_BL(std::move(leg_BL)), leg_BR(std::move(leg_BR)), leg_FL(std::move(leg_FL)), leg_FR(std::move(leg_FR)) {};
+
         void run();
         void tick();
 
     private:
         UART_HandleTypeDef *uart;
 
-        Leg leg_BL;
-        Leg leg_BR;
-        Leg leg_FL;
-        Leg leg_FR;
+        std::unique_ptr<Leg> leg_BL;
+        std::unique_ptr<Leg> leg_BR;
+        std::unique_ptr<Leg> leg_FL;
+        std::unique_ptr<Leg> leg_FR;
 
         // target
         glm::vec3 target_up;
@@ -50,12 +53,9 @@ class Robodog {
 
 // Constants
 
-#define PWM_TIM_US_PER_CYCLE    10
+// #define PWM_TIM_US_PER_CYCLE    10
 #define CLOCK_SPEED             180*1000000
 
 // Function prototypes
-
-void init_robot();
-void run_robot();
 
 void set_pwm_val(TIM_HandleTypeDef *tim, int width_us, uint32_t channel);

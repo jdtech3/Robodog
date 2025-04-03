@@ -34,7 +34,9 @@ extern "C" {
 #include <stdint.h>
 #include <stdio.h>
 
-#include "robot_main_c.h"
+#include "util/extern_handles.h"
+#include "util/logging.h"
+#include "dog/robot_main_c.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

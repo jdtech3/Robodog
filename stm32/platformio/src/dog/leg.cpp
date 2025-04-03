@@ -1,11 +1,4 @@
-#include "kinematics.hpp"
-
-leg_state_t* update_leg_target(leg_state_t* leg, vec3 target_r) {
-
-}
-
-leg_state_t* step_leg_angle(leg_state_t* leg) {
-}
+#include "dog/leg.hpp"
 
 glm::vec3 ik_BR(const glm::vec3& r){
     float L1 = LEG_L;

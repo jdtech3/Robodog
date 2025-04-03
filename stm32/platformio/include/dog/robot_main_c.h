@@ -6,7 +6,7 @@
 extern "C" {
 #endif
 
-void robot_entrypoint(TIM_HandleTypeDef *_timer, UART_HandleTypeDef *_uart);
+void robot_entrypoint();
 
 #ifdef __cplusplus
 }
