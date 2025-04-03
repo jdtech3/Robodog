@@ -111,7 +111,7 @@ void Legs::draw_single_leg(const Camera& camera, const glm::vec3& theta, const g
     glm::mat4 m(model);
     m = glm::translate( m, glm::vec3(BODY_X/2,-BODY_Y/2,-BODY_Z/2));
     m = glm::rotate(    m, theta[0], glm::vec3(0.f, -1.f, 0.f));
-    m = glm::translate( m, glm::vec3(LEG_S/2,0.f,0.f));
+    m = glm::translate( m, glm::vec3(LEG_L0/2,0.f,0.f));
     prism[0].model = m;
     prism[0].draw(camera);
 
