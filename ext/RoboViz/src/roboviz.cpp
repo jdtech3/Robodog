@@ -41,9 +41,9 @@ int main(int argc, char* argv[]){
 
         glm::vec3 leg_rel_pos[] = {
             glm::vec3( LEG_L0, (-LEG_L1+LEG_L2)/glm::sqrt(2.f), (-LEG_L1-LEG_L2)/glm::sqrt(2.f)),
-            glm::vec3( LEG_L0, (-LEG_L1+LEG_L2)/glm::sqrt(2.f), (-LEG_L1-LEG_L2)/glm::sqrt(2.f)),
+            glm::vec3( LEG_L0, (+LEG_L1-LEG_L2)/glm::sqrt(2.f), (-LEG_L1-LEG_L2)/glm::sqrt(2.f)),
             glm::vec3(-LEG_L0, (+LEG_L1-LEG_L2)/glm::sqrt(2.f), (-LEG_L1-LEG_L2)/glm::sqrt(2.f)),
-            glm::vec3(-LEG_L0, (+LEG_L1-LEG_L2)/glm::sqrt(2.f), (-LEG_L1-LEG_L2)/glm::sqrt(2.f))
+            glm::vec3(-LEG_L0, (-LEG_L1+LEG_L2)/glm::sqrt(2.f), (-LEG_L1-LEG_L2)/glm::sqrt(2.f))
         };
 
         PRINT_DEBUG("Cube Created\n");

@@ -250,10 +250,10 @@ int main(int argc, char* argv[]){
             FL_body += body_center;
             BL_body += body_center;
 
-            BR_foot += glm::vec3( LEG_L0, (-LEG_L1+LEG_L2)/glm::sqrt(2.f), 0.f);
-            FR_foot += glm::vec3( LEG_L0, (-LEG_L1+LEG_L2)/glm::sqrt(2.f), 0.f);
+            BR_foot += glm::vec3(+LEG_L0, (-LEG_L1+LEG_L2)/glm::sqrt(2.f), 0.f);
+            FR_foot += glm::vec3(+LEG_L0, (+LEG_L1-LEG_L2)/glm::sqrt(2.f), 0.f);
             FL_foot += glm::vec3(-LEG_L0, (+LEG_L1-LEG_L2)/glm::sqrt(2.f), 0.f);
-            BL_foot += glm::vec3(-LEG_L0, (+LEG_L1-LEG_L2)/glm::sqrt(2.f), 0.f);
+            BL_foot += glm::vec3(-LEG_L0, (-LEG_L1+LEG_L2)/glm::sqrt(2.f), 0.f);
 
             legs.theta[0] = Legs::ik_BR(BR_foot - BR_body);
             legs.theta[1] = Legs::ik_FR(FR_foot - FR_body);
