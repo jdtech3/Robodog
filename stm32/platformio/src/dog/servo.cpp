@@ -15,6 +15,9 @@ Servo::Servo(TIM_HandleTypeDef *_tim, uint32_t _ch, limits_t _limits, bool _flip
     if (limits.pwm_max_us == 0.f) limits.pwm_max_us = 2500.f;
     if (limits.abs_max_angle == 0.f) limits.abs_max_angle = 270._deg;
 
+    set_angle(preset_pos::CENTER);
+    HAL_TIM_PWM_Start(tim, tim_ch);
+
     LOG_DEBUG(
         "servo", "init OK: tim: 0x%x, ch: 0x%x, us per cycle: %d, pwm limits: [%.2f, %.2f], angle limits: [%.2f, %.2f]",
         &tim->Instance, tim_ch, TIM_US_PER_CYCLE,
@@ -39,10 +42,10 @@ void Servo::_set_width(float width_us) const {
     sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
     sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
 
-    HAL_TIM_PWM_ConfigChannel(tim, &sConfigOC, tim_ch);
-    HAL_TIM_PWM_Start(tim, tim_ch);
-    LOG_DEBUG("servo", "set width %.2f us (%d cycles, %.2f deg)", width_us, width_cycles,
-        lerp(0.f, 270.f, (width_us-limits.pwm_min_us)/(limits.pwm_max_us-limits.pwm_min_us)));
+
+    HAL_StatusTypeDef status = HAL_TIM_PWM_ConfigChannel(tim, &sConfigOC, tim_ch);
+    LOG_DEBUG("servo", "set width %.2f us (%d cycles, %.2f deg) - 0x%x", width_us, width_cycles,
+        lerp(0.f, 270.f, (width_us-limits.pwm_min_us)/(limits.pwm_max_us-limits.pwm_min_us)), status);
 }
 
 // Public

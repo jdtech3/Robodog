@@ -215,9 +215,9 @@ void robot_entrypoint() {
     );
 
     LOG_OK("robodog", "init OK, running!");
-    dog.set_target(Robodog::POS_20DEG_YAWLEFT);
-    dog.tick();
-    // dog.run();
+    // dog.set_target(Robodog::POS_20DEG_PITCHUP);
+    // dog.tick();
+    dog.run();
 
     #endif
 }
@@ -225,11 +225,17 @@ void robot_entrypoint() {
 void Robodog::run() {
     LOG_OK("robodog", "running!");
 
-    exit = true;
+    exit = false;
     while (!exit) {
-        this->tick();
+        set_target(Robodog::POS_NEUTRAL);
+        tick();
 
-        HAL_Delay(100);     // replace this with smarter delay logic
+        HAL_Delay(2500);
+
+        set_target(Robodog::POS_20DEG_PITCHUP);
+        tick();
+
+        HAL_Delay(2500);     // replace this with smarter delay logic
     }
 
     LOG_OK("robodog", "exited, bye :(");
