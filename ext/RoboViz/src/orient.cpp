@@ -233,6 +233,7 @@ int main(int argc, char* argv[]){
             } // while(SDL_PollEvent(&event))
 
             retrieveOrientation(asio_comm, dog_orientation);
+            // std::printf("%5.5f, %5.5fi, %5.5fj, %5.5fk\n", dog_orientation.w, dog_orientation.x, dog_orientation.y, dog_orientation.z);
 
             glm::vec3 BR_foot( BODY_X/2.f, -BODY_Y/2.f, 0);
             glm::vec3 FR_foot( BODY_X/2.f,  BODY_Y/2.f, 0);
