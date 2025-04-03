@@ -1,0 +1,75 @@
+            Servo servo_BL0(
+                &htim1,
+                TIM_CHANNEL_1,
+                (Servo::limits_t){0.f, 0.f, 105._deg, 150._deg, 0.f},
+                false
+            );
+            Servo servo_BL1(
+                &htim2,
+                TIM_CHANNEL_1,
+                (Servo::limits_t){0.f, 0.f, 85._deg, 195._deg, 0.f},
+                false
+            );
+            Servo servo_BL2(
+                &htim3,
+                TIM_CHANNEL_3,
+                (Servo::limits_t){0.f, 0.f, 62._deg, 205._deg, 0.f},
+                false
+            );
+
+            Servo servo_BR0(
+                &htim1,
+                TIM_CHANNEL_2,
+                (Servo::limits_t){0.f, 0.f, 112.5_deg, 157.5_deg, 0.f},
+                true
+            );
+            Servo servo_BR1(
+                &htim2,
+                TIM_CHANNEL_2,
+                (Servo::limits_t){0.f, 0.f, 80._deg, 190._deg, 0.f},
+                true
+            );
+            Servo servo_BR2(
+                &htim3,
+                TIM_CHANNEL_4,
+                (Servo::limits_t){0.f, 0.f, 63.5_deg, 206.5_deg, 0.f},
+                true
+            );
+
+            Servo servo_FL0(
+                &htim1,
+                TIM_CHANNEL_3,
+                (Servo::limits_t){0.f, 0.f, 112.5_deg, 157.5_deg, 0.f},
+                true
+            );
+            Servo servo_FL1(
+                &htim4,
+                TIM_CHANNEL_1,
+                (Servo::limits_t){0.f, 0.f, 80._deg, 190._deg, 0.f},
+                true
+            );
+            Servo servo_FL2(
+                &htim2,
+                TIM_CHANNEL_3,
+                (Servo::limits_t){0.f, 0.f, 65._deg, 205._deg, 0.f},
+                true
+            );
+
+            Servo servo_FR0(
+                &htim1,
+                TIM_CHANNEL_4,
+                (Servo::limits_t){0.f, 0.f, 105._deg, 150._deg, 0.f},
+                false
+            );
+            Servo servo_FR1(
+                &htim4,
+                TIM_CHANNEL_2,
+                (Servo::limits_t){0.f, 0.f, 85._deg, 195._deg, 0.f},
+                false
+            );
+            Servo servo_FR2(
+                &htim2,
+                TIM_CHANNEL_4,
+                (Servo::limits_t){0.f, 0.f, 55._deg, 195._deg, 0.f},
+                false
+            );

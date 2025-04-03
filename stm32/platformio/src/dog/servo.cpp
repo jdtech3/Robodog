@@ -2,9 +2,9 @@
 
 // Magic values
 
-#define US_PER_S                    1000000
-#define PCLK_TO_TIMCLK_MULTIPLIER   2
-#define EPSILON                     0.001
+constexpr static uint32_t US_PER_S =                    1000000;
+constexpr static uint8_t PCLK_TO_TIMCLK_MULTIPLIER =    2;
+constexpr static float EPSILON =                        0.001;
 
 // Constructor
 

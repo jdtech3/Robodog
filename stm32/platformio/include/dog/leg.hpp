@@ -7,6 +7,7 @@
 #include "glm/geometric.hpp"
 #include "glm/vec3.hpp"
 
+// #include "dog/robot_main.hpp"
 #include "dog/servo.hpp"
 
 // typedef
@@ -20,6 +21,15 @@ class Leg {
             FRONT_RIGHT,
         } position_t;
 
+        constexpr static float SERVO_NEUTRAL = 135._deg;
+        constexpr static float JOINT_0_IK_NEUTRAL = 0._deg;
+        constexpr static float JOINT_1_IK_NEUTRAL = 135._deg;
+        constexpr static float JOINT_2_IK_NEUTRAL = 90._deg;
+
+        constexpr static float LEG_L0 = 0.0765f;
+        constexpr static float LEG_L1 = 0.1330f;
+        constexpr static float LEG_L2 = 0.1140f;
+
         Leg(
             position_t leg,
             std::unique_ptr<Servo> servo_0,
@@ -29,7 +39,7 @@ class Leg {
 
         void enable() const;
         void disable() const;
-        void update_target(glm::vec3 target_r);
+        void update_target(const glm::vec3& target_r);
         void step_angle();
 
     private:
@@ -41,6 +51,11 @@ class Leg {
         glm::vec3 target_joint_angle;       // same order as above
         // glm::vec3 cur_joint_angle;
         // glm::vec3 cur_angular_speed;
+
+        void _ik_BL(glm::vec3 r);
+        void _ik_BR(glm::vec3 r);
+        void _ik_FL(glm::vec3 r);
+        void _ik_FR(glm::vec3 r);
 };
 
 // Constants
