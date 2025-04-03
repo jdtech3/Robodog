@@ -43,8 +43,8 @@ void robot_entrypoint() {
             true
         );
 
-        servo_BL1.set_angle(Servo::preset_pos::MIN);
-        servo_BR1.set_angle(Servo::preset_pos::MIN);
+        servo_BL1.set_angle(Servo::preset_pos::CENTER);
+        servo_BR1.set_angle(Servo::preset_pos::CENTER);
 
         Servo servo_FL2(
             &htim2,
@@ -75,8 +75,38 @@ void robot_entrypoint() {
             false
         );
 
-        servo_FL1.set_angle(Servo::preset_pos::MIN);
-        servo_FR1.set_angle(Servo::preset_pos::MIN);
+        servo_FL1.set_angle(Servo::preset_pos::CENTER);
+        servo_FR1.set_angle(Servo::preset_pos::CENTER);
+
+        Servo servo_BL0(
+            &htim1,
+            TIM_CHANNEL_1,
+            (Servo::limits_t){0.f, 0.f, 105._deg, 150._deg, 0.f},
+            false
+        );
+        Servo servo_BR0(
+            &htim1,
+            TIM_CHANNEL_2,
+            (Servo::limits_t){0.f, 0.f, 112.5_deg, 157.5_deg, 0.f},
+            true
+        );
+        Servo servo_FL0(
+            &htim1,
+            TIM_CHANNEL_3,
+            (Servo::limits_t){0.f, 0.f, 112.5_deg, 157.5_deg, 0.f},
+            true
+        );
+        Servo servo_FR0(
+            &htim1,
+            TIM_CHANNEL_4,
+            (Servo::limits_t){0.f, 0.f, 105._deg, 150._deg, 0.f},
+            false
+        );
+
+        servo_BL0.set_angle(Servo::preset_pos::CENTER);
+        servo_BR0.set_angle(Servo::preset_pos::CENTER);
+        servo_FL0.set_angle(Servo::preset_pos::CENTER);
+        servo_FR0.set_angle(Servo::preset_pos::CENTER);
 
         // while (true) {
         //     for (float a = 85._deg; a < 195._deg; a += 1._deg) {
