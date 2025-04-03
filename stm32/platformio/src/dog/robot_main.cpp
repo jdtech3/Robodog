@@ -127,6 +127,10 @@ void robot_entrypoint() {
 
     #else
 
+    uint8_t data = 0x00;
+    while (data != 0xFF) HAL_UART_Receive(&huart4, &data, 1, HAL_MAX_DELAY);
+    LOG_OK("robodog", "ESP32 ready detected, proceeding...");
+
     Robodog dog(
         std::make_unique<Leg>(
             Leg::position::BACK_LEFT,
@@ -225,17 +229,43 @@ void robot_entrypoint() {
 void Robodog::run() {
     LOG_OK("robodog", "running!");
 
+    DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+
+    uint32_t last_tick = HAL_GetTick();
+    uint32_t last_cyc = DWT->CYCCNT;
+    uint32_t i = 0;
+
     exit = false;
     while (!exit) {
-        set_target(Robodog::POS_NEUTRAL);
+        uint8_t dummy = 0xFF;
+        HAL_UART_Transmit(&huart4, &dummy, 1, 100);
+
+        glm::quat q;
+        HAL_UART_Receive(&huart4, (uint8_t*)&q, sizeof(q), 100);
+
+        glm::quat quat_buf(q.x, q.y, q.z, q.w);
+
+        set_target(quat_buf);
         tick();
 
-        HAL_Delay(2500);
+        // set_target(Robodog::POS_NEUTRAL);
+        // set_target(Robodog::POS_20DEG_PITCHUP);
 
-        set_target(Robodog::POS_20DEG_PITCHUP);
-        tick();
+        uint32_t cur_ms = HAL_GetTick();
+        int ms_per_iter = cur_ms - last_tick;
+        last_tick = cur_ms;
 
-        HAL_Delay(2500);     // replace this with smarter delay logic
+        uint32_t cur_cyc = DWT->CYCCNT;
+        int cyc_per_iter = cur_cyc - last_cyc;
+        last_cyc = cur_cyc;
+
+        if (i % 1000 == 0) {
+            printf("\n\n\n\n\n");
+            LOG_INFO("robodog", "ms per iter: %d (%.2f/s), cycles per iter: %d (%.2f/s)", ms_per_iter, 1000.f/ms_per_iter, cyc_per_iter, static_cast<float>(CLOCK_SPEED)/cyc_per_iter);
+            LOG_INFO("robodog", "input quat: %.6f x, %.6f y, %.6f z, %.6f w", quat_buf.x, quat_buf.y, quat_buf.z, quat_buf.w);
+        }
+
+        i++;
     }
 
     LOG_OK("robodog", "exited, bye :(");
