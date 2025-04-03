@@ -12,13 +12,13 @@
 #include "GLider/GLider.hpp"
 #include "utils.hpp"
 
-constexpr float BODY_X =  2.f;
-constexpr float BODY_Y =  3.f;
-constexpr float BODY_Z =  0.5f;
-constexpr float LEG_S  =  0.25f;
-constexpr float LEG_L0 =  0.5f;
-constexpr float LEG_L1 =  1.f;
-constexpr float LEG_L2 =  1.f;
+constexpr float BODY_X = 0.0720f * 10;
+constexpr float BODY_Y = 0.3180f * 10;
+constexpr float BODY_Z = 0.0575f * 10;
+constexpr float LEG_S  = 0.0250f * 10;
+constexpr float LEG_L0 = 0.0765f * 10;
+constexpr float LEG_L1 = 0.1330f * 10;
+constexpr float LEG_L2 = 0.1140f * 10;
 
 class RectPrism{
 private:
