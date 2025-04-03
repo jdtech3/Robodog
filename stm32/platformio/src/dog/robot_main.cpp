@@ -7,9 +7,12 @@ void robot_entrypoint() {
     #ifdef CALIBRATION_MODE
         /*
             1. set to center
-            2. sweep non-flipped leg to find min and max
-            3. flipped leg limits are min: center - (max - center) and max: center + (center - min)
+            2. put in servo horn screw
+            3. sweep non-flipped leg with angles +/- from center to find min and max
+            4. flipped leg limits are shift up/down until 270-max/min works (TODO: closed form formula)
         */
+
+        // start with: (Servo::limits_t){0.f, 0.f, 0._deg, 270._deg, 0.f},
 
         Servo servo_BL2(
             &htim3,
@@ -20,7 +23,7 @@ void robot_entrypoint() {
         Servo servo_BR2(
             &htim3,
             TIM_CHANNEL_4,
-            (Servo::limits_t){0.f, 0.f, 65._deg, 208._deg, 0.f},
+            (Servo::limits_t){0.f, 0.f, 63.5_deg, 206.5_deg, 0.f},
             true
         );
 
@@ -36,22 +39,56 @@ void robot_entrypoint() {
         Servo servo_BR1(
             &htim2,
             TIM_CHANNEL_2,
-            (Servo::limits_t){0.f, 0.f, 75._deg, 195._deg, 0.f},
+            (Servo::limits_t){0.f, 0.f, 80._deg, 190._deg, 0.f},
             true
         );
 
-        servo_BL1.set_angle(Servo::preset_pos::CENTER);
-        servo_BR1.set_angle(Servo::preset_pos::CENTER);
+        servo_BL1.set_angle(Servo::preset_pos::MIN);
+        servo_BR1.set_angle(Servo::preset_pos::MIN);
+
+        Servo servo_FL2(
+            &htim2,
+            TIM_CHANNEL_3,
+            (Servo::limits_t){0.f, 0.f, 65._deg, 205._deg, 0.f},
+            true
+        );
+        Servo servo_FR2(
+            &htim2,
+            TIM_CHANNEL_4,
+            (Servo::limits_t){0.f, 0.f, 55._deg, 195._deg, 0.f},
+            false
+        );
+
+        servo_FL2.set_angle(Servo::preset_pos::CENTER);
+        servo_FR2.set_angle(Servo::preset_pos::CENTER);
+
+        Servo servo_FL1(
+            &htim4,
+            TIM_CHANNEL_1,
+            (Servo::limits_t){0.f, 0.f, 80._deg, 190._deg, 0.f},
+            true
+        );
+        Servo servo_FR1(
+            &htim4,
+            TIM_CHANNEL_2,
+            (Servo::limits_t){0.f, 0.f, 85._deg, 195._deg, 0.f},
+            false
+        );
+
+        servo_FL1.set_angle(Servo::preset_pos::MIN);
+        servo_FR1.set_angle(Servo::preset_pos::MIN);
 
         // while (true) {
-        //     for (float a = 80._deg; a < 190._deg; a += 1._deg) {
-        //         servo_BL1.set_angle(a);
-        //         servo_BR1.set_angle(a);
+        //     for (float a = 85._deg; a < 195._deg; a += 1._deg) {
+        //         LOG_INFO("calibrate", "setting angle %.2f deg", rad2deg(a));
+        //         servo_FL1.set_angle(a);
+        //         servo_FR1.set_angle(a);
         //         HAL_Delay(50);
         //     }
-        //     for (float a = 190._deg; a > 80._deg; a -= 1._deg) {
-        //         servo_BL1.set_angle(a);
-        //         servo_BR1.set_angle(a);
+        //     for (float a = 195._deg; a > 85._deg; a -= 1._deg) {
+        //         LOG_INFO("calibrate", "setting angle %.2f deg", rad2deg(a));
+        //         servo_FL1.set_angle(a);
+        //         servo_FR1.set_angle(a);
         //         HAL_Delay(50);
         //     }
         // }
