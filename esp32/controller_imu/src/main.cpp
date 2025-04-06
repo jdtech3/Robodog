@@ -6,7 +6,7 @@
 #include <MPU6050_6Axis_MotionApps20.h>
 #include "quat_helper.hpp"
 
-constexpr float MOVEMENT_GAIN = 0.1f;
+constexpr float MOVEMENT_GAIN = 0.4f;
 constexpr unsigned long CLIENT_UPDATE_MS = 50;
 constexpr std::size_t NCLIENTS = 5;
 
@@ -98,6 +98,7 @@ void loop(){
     if (mpu.dmpGetCurrentFIFOPacket(fifoBuffer)) {
         if(!mpu.dmpGetQuaternion(&qGet, fifoBuffer)){
             qSend = pow(qGet, MOVEMENT_GAIN);
+            // qSend = qGet;
         }
     }
 
