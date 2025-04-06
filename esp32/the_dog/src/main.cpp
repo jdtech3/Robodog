@@ -44,14 +44,21 @@ void setup() {
 
     connect_client();
 
+    Serial.write(0xFF);
+
 }
 
 void loop() {
-    if(!client.connected()) connect_client();
+    // if(!client.connected()) connect_client();
     if(client.available() >= sizeof(rbuf)){
         do{
             client.read((uint8_t*)rbuf, sizeof(rbuf));
         }while(client.available() >= sizeof(rbuf));
-        Serial.printf("%5.5f, %5.5f, %5.5f, %5.5f\n", rbuf[0], rbuf[1], rbuf[2], rbuf[3]);
+        // Serial.printf("%5.5f, %5.5f, %5.5f, %5.5f\n", rbuf[0], rbuf[1], rbuf[2], rbuf[3]);
+    }
+    if(Serial.available()){
+        do Serial.read();
+        while(Serial.available());
+        Serial.write((uint8_t*)rbuf, sizeof(rbuf));
     }
 }
