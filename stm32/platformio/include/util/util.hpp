@@ -3,6 +3,14 @@
 #include <cmath>
 #include <type_traits>
 
+#define SET_LED_GREEN(on)       HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, on ? GPIO_PIN_SET : GPIO_PIN_RESET)
+#define SET_LED_BLUE(on)        HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, on ? GPIO_PIN_SET : GPIO_PIN_RESET)
+#define SET_LED_RED(on)         HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, on ? GPIO_PIN_SET : GPIO_PIN_RESET)
+
+#define TOGGLE_LED_GREEN()      HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin)
+#define TOGGLE_LED_BLUE()       HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin)
+#define TOGGLE_LED_RED()        HAL_GPIO_TogglePin(LD3_GPIO_Port, LD3_Pin)
+
 constexpr long double operator"" _deg(long double deg){
     return deg * M_PI / 180;
 }
@@ -43,4 +51,3 @@ lerp(_Float __a, _Float __b, _Float __t) {
 	    return (__t > _Float{1}) == (__b > __a) ? std::max(__b, __x) : std::min(__b, __x);
 	}
 }
-

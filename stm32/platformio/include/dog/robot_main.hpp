@@ -9,6 +9,12 @@
 #include "dog/leg.hpp"
 #include "dog/servo.hpp"
 
+typedef enum run_mode {
+    CALIBRATION,
+    PRESET,
+    EXT_INPUT,
+} run_mode_t;
+
 class Robodog {
     public:
         typedef enum movement_type {

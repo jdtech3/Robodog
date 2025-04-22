@@ -42,8 +42,10 @@ void Servo::_set_width(float width_us) const {
     sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
     sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
 
-
     HAL_StatusTypeDef status = HAL_TIM_PWM_ConfigChannel(tim, &sConfigOC, tim_ch);
+
+    if (status != HAL_OK) LOG_ERR("servo", "HAL_TIM_PWM_ConfigChannel failed with status %d", (int)status);
+
     LOG_DEBUG("servo", "set width %.2f us (%d cycles, %.2f deg) - 0x%x", width_us, width_cycles,
         lerp(0.f, 270.f, (width_us-limits.pwm_min_us)/(limits.pwm_max_us-limits.pwm_min_us)), status);
 }

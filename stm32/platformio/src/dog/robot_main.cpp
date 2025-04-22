@@ -1,10 +1,17 @@
 #include "dog/robot_main_c.h"
 #include "dog/robot_main.hpp"
 
-// #define CALIBRATION_MODE
+
+// const static run_mode_t run_mode = CALIBRATION;
+// const static run_mode_t run_mode = PRESET;
+const static run_mode_t run_mode = EXT_INPUT;
 
 void robot_entrypoint() {
-    #ifdef CALIBRATION_MODE
+    SET_LED_GREEN(true);
+
+    if (run_mode == CALIBRATION) {
+        LOG_INFO("robodog", "mode: CALIBRATION");
+
         /*
             1. set to center
             2. put in servo horn screw
@@ -123,111 +130,127 @@ void robot_entrypoint() {
         //     }
         // }
 
-        return;
+    }
 
-    #else
+    else {
 
-    uint8_t data = 0x00;
-    while (data != 0xFF) HAL_UART_Receive(&huart4, &data, 1, HAL_MAX_DELAY);
-    LOG_OK("robodog", "ESP32 ready detected, proceeding...");
-
-    Robodog dog(
-        std::make_unique<Leg>(
-            Leg::position::BACK_LEFT,
-            std::make_unique<Servo>(        // order: hip sideways, hip forward/back, knee
-                &htim1,
-                TIM_CHANNEL_1,
-                (Servo::limits_t){0.f, 0.f, 105._deg, 150._deg, 0.f},
-                false
+        Robodog dog(
+            std::make_unique<Leg>(
+                Leg::position::BACK_LEFT,
+                std::make_unique<Servo>(        // order: hip sideways, hip forward/back, knee
+                    &htim1,
+                    TIM_CHANNEL_1,
+                    (Servo::limits_t){0.f, 0.f, 105._deg, 150._deg, 0.f},
+                    false
+                ),
+                std::make_unique<Servo>(
+                    &htim2,
+                    TIM_CHANNEL_1,
+                    (Servo::limits_t){0.f, 0.f, 85._deg, 195._deg, 0.f},
+                    false
+                ),
+                std::make_unique<Servo>(
+                    &htim3,
+                    TIM_CHANNEL_3,
+                    (Servo::limits_t){0.f, 0.f, 62._deg, 205._deg, 0.f},
+                    false
+                )
             ),
-            std::make_unique<Servo>(
-                &htim2,
-                TIM_CHANNEL_1,
-                (Servo::limits_t){0.f, 0.f, 85._deg, 195._deg, 0.f},
-                false
+            std::make_unique<Leg>(
+                Leg::position::BACK_RIGHT,
+                std::make_unique<Servo>(
+                    &htim1,
+                    TIM_CHANNEL_2,
+                    (Servo::limits_t){0.f, 0.f, 112.5_deg, 157.5_deg, 0.f},
+                    true
+                ),
+                std::make_unique<Servo>(
+                    &htim2,
+                    TIM_CHANNEL_2,
+                    (Servo::limits_t){0.f, 0.f, 80._deg, 190._deg, 0.f},
+                    true
+                ),
+                std::make_unique<Servo>(
+                    &htim3,
+                    TIM_CHANNEL_4,
+                    (Servo::limits_t){0.f, 0.f, 63.5_deg, 206.5_deg, 0.f},
+                    true
+                )
             ),
-            std::make_unique<Servo>(
-                &htim3,
-                TIM_CHANNEL_3,
-                (Servo::limits_t){0.f, 0.f, 62._deg, 205._deg, 0.f},
-                false
+            std::make_unique<Leg>(
+                Leg::position::FRONT_LEFT,
+                std::make_unique<Servo>(
+                    &htim1,
+                    TIM_CHANNEL_3,
+                    (Servo::limits_t){0.f, 0.f, 112.5_deg, 157.5_deg, 0.f},
+                    true
+                ),
+                std::make_unique<Servo>(
+                    &htim4,
+                    TIM_CHANNEL_1,
+                    (Servo::limits_t){0.f, 0.f, 80._deg, 190._deg, 0.f},
+                    true
+                ),
+                std::make_unique<Servo>(
+                    &htim2,
+                    TIM_CHANNEL_3,
+                    (Servo::limits_t){0.f, 0.f, 65._deg, 205._deg, 0.f},
+                    true
+                )
+            ),
+            std::make_unique<Leg>(
+                Leg::position::FRONT_RIGHT,
+                std::make_unique<Servo>(
+                    &htim1,
+                    TIM_CHANNEL_4,
+                    (Servo::limits_t){0.f, 0.f, 105._deg, 150._deg, 0.f},
+                    false
+                ),
+                std::make_unique<Servo>(
+                    &htim4,
+                    TIM_CHANNEL_2,
+                    (Servo::limits_t){0.f, 0.f, 85._deg, 195._deg, 0.f},
+                    false
+                ),
+                std::make_unique<Servo>(
+                    &htim2,
+                    TIM_CHANNEL_4,
+                    (Servo::limits_t){0.f, 0.f, 55._deg, 195._deg, 0.f},
+                    false
+                )
             )
-        ),
-        std::make_unique<Leg>(
-            Leg::position::BACK_RIGHT,
-            std::make_unique<Servo>(
-                &htim1,
-                TIM_CHANNEL_2,
-                (Servo::limits_t){0.f, 0.f, 112.5_deg, 157.5_deg, 0.f},
-                true
-            ),
-            std::make_unique<Servo>(
-                &htim2,
-                TIM_CHANNEL_2,
-                (Servo::limits_t){0.f, 0.f, 80._deg, 190._deg, 0.f},
-                true
-            ),
-            std::make_unique<Servo>(
-                &htim3,
-                TIM_CHANNEL_4,
-                (Servo::limits_t){0.f, 0.f, 63.5_deg, 206.5_deg, 0.f},
-                true
-            )
-        ),
-        std::make_unique<Leg>(
-            Leg::position::FRONT_LEFT,
-            std::make_unique<Servo>(
-                &htim1,
-                TIM_CHANNEL_3,
-                (Servo::limits_t){0.f, 0.f, 112.5_deg, 157.5_deg, 0.f},
-                true
-            ),
-            std::make_unique<Servo>(
-                &htim4,
-                TIM_CHANNEL_1,
-                (Servo::limits_t){0.f, 0.f, 80._deg, 190._deg, 0.f},
-                true
-            ),
-            std::make_unique<Servo>(
-                &htim2,
-                TIM_CHANNEL_3,
-                (Servo::limits_t){0.f, 0.f, 65._deg, 205._deg, 0.f},
-                true
-            )
-        ),
-        std::make_unique<Leg>(
-            Leg::position::FRONT_RIGHT,
-            std::make_unique<Servo>(
-                &htim1,
-                TIM_CHANNEL_4,
-                (Servo::limits_t){0.f, 0.f, 105._deg, 150._deg, 0.f},
-                false
-            ),
-            std::make_unique<Servo>(
-                &htim4,
-                TIM_CHANNEL_2,
-                (Servo::limits_t){0.f, 0.f, 85._deg, 195._deg, 0.f},
-                false
-            ),
-            std::make_unique<Servo>(
-                &htim2,
-                TIM_CHANNEL_4,
-                (Servo::limits_t){0.f, 0.f, 55._deg, 195._deg, 0.f},
-                false
-            )
-        )
-    );
+        );
+        
+        if (run_mode == PRESET) {
+            LOG_INFO("robodog", "mode: PRESET");
 
-    LOG_OK("robodog", "init OK, running!");
-    // dog.set_target(Robodog::POS_20DEG_PITCHUP);
-    // dog.tick();
-    dog.run();
+            dog.set_target(Robodog::POS_NEUTRAL);
+            dog.tick();
 
-    #endif
+            SET_LED_BLUE(true);
+        }
+
+        else if (run_mode == EXT_INPUT) {
+            LOG_INFO("robodog", "mode: EXT INPUT");
+            
+            uint8_t data = 0x00;
+            while (data != 0xFF) HAL_UART_Receive(&huart4, &data, 1, HAL_MAX_DELAY);
+            LOG_OK("robodog", "ESP32 ready detected, proceeding...");
+
+            dog.run();
+        }
+
+        else {
+            LOG_ERR("robodog", "no/invalid run mode, doing nothing");
+            while (1);
+        }
+    }
 }
 
 void Robodog::run() {
     LOG_OK("robodog", "running!");
+
+    SET_LED_BLUE(true);
 
     DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
 
@@ -241,7 +264,8 @@ void Robodog::run() {
         HAL_UART_Transmit(&huart4, &dummy, 1, 100);
 
         glm::quat q;
-        HAL_UART_Receive(&huart4, (uint8_t*)&q, sizeof(q), 100);
+        if (HAL_UART_Receive(&huart4, (uint8_t*)&q, sizeof(q), 100) == HAL_TIMEOUT)
+            LOG_WARN("robodog", "EXT input timed out");
 
         glm::quat quat_buf(q.x, q.y, q.z, q.w);
 
@@ -258,6 +282,10 @@ void Robodog::run() {
         uint32_t cur_cyc = DWT->CYCCNT;
         int cyc_per_iter = cur_cyc - last_cyc;
         last_cyc = cur_cyc;
+
+        if (i % 10 == 0) {
+            TOGGLE_LED_RED();
+        }
 
         if (i % 1000 == 0) {
             printf("\n\n\n\n\n");
